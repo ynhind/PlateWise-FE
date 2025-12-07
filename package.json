@@ -1,0 +1,46 @@
+{
+  "name": "platewise-fe",
+  "version": "1.0.0",
+  "description": "PlateWise - Smart Food Management Frontend",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ynhind/PlateWise-FE.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/ynhind/PlateWise-FE/issues"
+  },
+  "homepage": "https://github.com/ynhind/PlateWise-FE#readme",
+  "dependencies": {
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.6"
+  }
+}
