@@ -1,12 +1,18 @@
-import { ChallengeProvider } from './features/challenges/ChallengeContext';
-import { ChallengesPage } from './features/challenges/ChallengesPage';
-import './index.css'; // Keep global styles
+import Navbar from "./components/common/Navbar";
+import Footer from "./components/common/Footer";
+import HeroSection from "./components/home/HeroSection";
+import FeaturesSection from "./components/home/FeaturesSection";
+import HowItWorksSection from "./components/home/HowItWorksSection";
 
 function App() {
   return (
-    <ChallengeProvider>
-      <ChallengesPage />
-    </ChallengeProvider>
+    <main className="min-h-screen bg-background">
+      <Navbar />
+      <HeroSection />
+      <FeaturesSection />
+      <HowItWorksSection />
+      <Footer />
+    </main>
   );
 }
 
