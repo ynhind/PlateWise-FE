@@ -1,18 +1,17 @@
-import Navbar from "./components/Navbar";
-import HeroSection from "./components/HeroSection";
-import FeaturesSection from "./components/FeaturesSection";
-import HowItWorksSection from "./components/HowItWorksSection";
-import Footer from "./components/Footer";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/common/Navbar";
+import Home from "./pages/Home";
+import PantryTracker from "./pages/PantryTracker";
 
 function App() {
   return (
-    <main className="min-h-screen bg-background">
+    <Router>
       <Navbar />
-      <HeroSection />
-      <FeaturesSection />
-      <HowItWorksSection />
-      <Footer />
-    </main>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/pantry-tracker" element={<PantryTracker />} />
+      </Routes>
+    </Router>
   );
 }
 
