@@ -10,11 +10,12 @@ interface MealLog {
   fats: number;
   image?: string;
   time: string;
+  date: string; // YYYY-MM-DD format
 }
 
 interface DailyTrackerProps {
   mealLogs: MealLog[];
-  onAddMeal: (meal: Omit<MealLog, "id" | "time">) => void;
+  onAddMeal: (meal: Omit<MealLog, "id" | "time">, date?: string) => void;
   onDeleteMeal: (id: string) => void;
   dailyGoal: {
     calories: number;
@@ -30,6 +31,10 @@ const DailyTracker: React.FC<DailyTrackerProps> = ({
   onDeleteMeal,
   dailyGoal,
 }) => {
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().split("T")[0]; // YYYY-MM-DD
+  });
   const [showAddMeal, setShowAddMeal] = useState(false);
   const [newMeal, setNewMeal] = useState({
     mealType: "breakfast" as "breakfast" | "lunch" | "dinner" | "snack",
@@ -40,8 +45,15 @@ const DailyTracker: React.FC<DailyTrackerProps> = ({
     fats: 0,
   });
 
+  // Filter meals by selected date
+  const getFilteredMeals = () => {
+    return mealLogs.filter((meal) => meal.date === selectedDate);
+  };
+
+  const filteredMeals = getFilteredMeals();
+
   const getTodayTotals = () => {
-    return mealLogs.reduce(
+    return filteredMeals.reduce(
       (acc, meal) => ({
         calories: acc.calories + meal.calories,
         protein: acc.protein + meal.protein,
@@ -65,7 +77,50 @@ const DailyTracker: React.FC<DailyTrackerProps> = ({
   const fatsPercent = Math.min((totals.fats / dailyGoal.fats) * 100, 100);
 
   const getMealsByType = (type: "breakfast" | "lunch" | "dinner" | "snack") => {
-    return mealLogs.filter((meal) => meal.mealType === type);
+    return filteredMeals.filter((meal) => meal.mealType === type);
+  };
+
+  const goToPreviousDay = () => {
+    const date = new Date(selectedDate);
+    date.setDate(date.getDate() - 1);
+    setSelectedDate(date.toISOString().split("T")[0]);
+  };
+
+  const goToNextDay = () => {
+    const date = new Date(selectedDate);
+    const today = new Date();
+    date.setDate(date.getDate() + 1);
+    // Don't allow future dates
+    if (date <= today) {
+      setSelectedDate(date.toISOString().split("T")[0]);
+    }
+  };
+
+  const goToToday = () => {
+    const today = new Date();
+    setSelectedDate(today.toISOString().split("T")[0]);
+  };
+
+  const isToday = selectedDate === new Date().toISOString().split("T")[0];
+
+  const formatDisplayDate = (dateStr: string) => {
+    const date = new Date(dateStr + "T00:00:00");
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const dateOnly = dateStr;
+    const todayStr = today.toISOString().split("T")[0];
+    const yesterdayStr = yesterday.toISOString().split("T")[0];
+
+    if (dateOnly === todayStr) return "Today";
+    if (dateOnly === yesterdayStr) return "Yesterday";
+
+    return date.toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
   };
 
   const handleAddMeal = () => {
@@ -73,7 +128,7 @@ const DailyTracker: React.FC<DailyTrackerProps> = ({
       alert("Please fill in meal name and calories");
       return;
     }
-    onAddMeal(newMeal);
+    onAddMeal(newMeal, selectedDate);
     setNewMeal({
       mealType: "breakfast",
       name: "",
@@ -101,6 +156,78 @@ const DailyTracker: React.FC<DailyTrackerProps> = ({
 
   return (
     <div>
+      {/* Date Navigation */}
+      <div className="bg-white rounded-2xl p-6 border-2 border-gray-200 mb-6">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={goToPreviousDay}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <svg
+              className="w-6 h-6 text-gray-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+
+          <div className="flex items-center gap-4">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-gray-900">
+                {formatDisplayDate(selectedDate)}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {new Date(selectedDate + "T00:00:00").toLocaleDateString(
+                  "en-US",
+                  {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }
+                )}
+              </p>
+            </div>
+            {!isToday && (
+              <button
+                onClick={goToToday}
+                className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Today
+              </button>
+            )}
+          </div>
+
+          <button
+            onClick={goToNextDay}
+            disabled={isToday}
+            className={`p-2 rounded-lg transition-colors ${
+              isToday ? "opacity-30 cursor-not-allowed" : "hover:bg-gray-100"
+            }`}
+          >
+            <svg
+              className="w-6 h-6 text-gray-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
       {/* Daily Summary Cards */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-6 border-2 border-orange-200">
@@ -270,7 +397,12 @@ const DailyTracker: React.FC<DailyTrackerProps> = ({
       {/* Add Meal Form */}
       {showAddMeal && (
         <div className="mb-8 bg-white rounded-2xl shadow-lg border-2 border-green-200 p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-2">Log New Meal</h3>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xl font-bold text-gray-900">Log New Meal</h3>
+            <div className="text-sm font-semibold text-green-600 bg-green-50 px-3 py-1 rounded-full">
+              📅 {formatDisplayDate(selectedDate)}
+            </div>
+          </div>
           <p className="text-sm text-gray-600 mb-4">
             💡 <strong>Tip:</strong> If you don't know nutrition values, you can
             leave Protein, Carbs, and Fats as 0, or use nutrition labels/apps

@@ -163,8 +163,12 @@ const PantryTracker = () => {
     setTimeout(() => setSelectedRecipe(null), 300);
   };
 
-  const addMealLog = (meal: Omit<MealLog, "id" | "time" | "date">) => {
+  const addMealLog = (
+    meal: Omit<MealLog, "id" | "time" | "date">,
+    date?: string
+  ) => {
     const now = new Date();
+    const targetDate = date || now.toISOString().split("T")[0];
     const newMeal: MealLog = {
       ...meal,
       id: Date.now().toString(),
@@ -172,15 +176,9 @@ const PantryTracker = () => {
         hour: "2-digit",
         minute: "2-digit",
       }),
-      date: now.toISOString().split("T")[0], // YYYY-MM-DD
+      date: targetDate, // Use provided date or today
     };
     setMealLogs((prev) => [...prev, newMeal]);
-  };
-
-  // Get today's meals only
-  const getTodayMeals = () => {
-    const today = new Date().toISOString().split("T")[0];
-    return mealLogs.filter((meal) => meal.date === today);
   };
 
   const deleteMealLog = (id: string) => {
@@ -427,7 +425,7 @@ const PantryTracker = () => {
 
         {activeTab === "tracker" && (
           <DailyTracker
-            mealLogs={getTodayMeals()}
+            mealLogs={mealLogs}
             onAddMeal={addMealLog}
             onDeleteMeal={deleteMealLog}
             dailyGoal={dailyGoal}

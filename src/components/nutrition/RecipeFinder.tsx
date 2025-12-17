@@ -39,6 +39,24 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
   const [searchType, setSearchType] = React.useState<"ingredients" | "recipe">(
     "ingredients"
   );
+  const [savedRecipes, setSavedRecipes] = React.useState<number[]>(() => {
+    const saved = localStorage.getItem("platewise_saved_recipes");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // Save to localStorage whenever savedRecipes changes
+  React.useEffect(() => {
+    localStorage.setItem("platewise_saved_recipes", JSON.stringify(savedRecipes));
+  }, [savedRecipes]);
+
+  const toggleSaveRecipe = (recipeId: number, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent card click
+    setSavedRecipes((prev) =>
+      prev.includes(recipeId)
+        ? prev.filter((id) => id !== recipeId)
+        : [...prev, recipeId]
+    );
+  };
 
   const popularIngredients = [
     { id: 1, name: "Chicken", icon: "🍗", category: "Protein" },
@@ -308,22 +326,34 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
                     alt={recipe.title}
                     className="w-full h-full object-cover"
                   />
-                  {recipe.likes && (
-                    <div className="absolute top-3 right-3 bg-white px-3 py-1 rounded-full text-sm font-semibold text-gray-900 shadow-md flex items-center gap-1">
-                      <svg
-                        className="w-4 h-4 text-red-500"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      {recipe.likes}
-                    </div>
-                  )}
+                  {/* Save Button */}
+                  <button
+                    onClick={(e) => toggleSaveRecipe(recipe.id, e)}
+                    className={`absolute top-3 right-3 px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg transition-all duration-200 flex items-center gap-1.5 ${
+                      savedRecipes.includes(recipe.id)
+                        ? "bg-green-600 text-white hover:bg-green-700"
+                        : "bg-white text-gray-900 hover:bg-gray-50"
+                    }`}
+                  >
+                    <svg
+                      className={`w-4 h-4 ${
+                        savedRecipes.includes(recipe.id)
+                          ? "text-white"
+                          : "text-gray-600"
+                      }`}
+                      fill={savedRecipes.includes(recipe.id) ? "currentColor" : "none"}
+                      stroke="currentColor"
+                      strokeWidth={savedRecipes.includes(recipe.id) ? "0" : "2"}
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                      />
+                    </svg>
+                    {savedRecipes.includes(recipe.id) ? "Saved" : "Save"}
+                  </button>
                 </div>
                 <div className="p-5">
                   <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2">
