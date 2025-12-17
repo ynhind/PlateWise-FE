@@ -1,8 +1,8 @@
-import Navbar from "./components/Navbar";
-import HeroSection from "./components/HeroSection";
-import FeaturesSection from "./components/FeaturesSection";
-import HowItWorksSection from "./components/HowItWorksSection";
-import Footer from "./components/Footer";
+import Navbar from "./components/common/Navbar";
+import Footer from "./components/common/Footer";
+import HeroSection from "./components/home/HeroSection";
+import FeaturesSection from "./components/home/FeaturesSection";
+import HowItWorksSection from "./components/home/HowItWorksSection";
 
 function App() {
   return (
