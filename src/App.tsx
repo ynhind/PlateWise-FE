@@ -4,9 +4,8 @@ import HeroSection from "./components/home/HeroSection";
 import FeaturesSection from "./components/home/FeaturesSection";
 import HowItWorksSection from "./components/home/HowItWorksSection";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { ChallengeProvider } from "./features/challenges/ChallengeContext";
-import { ChallengesPage } from "./features/challenges/ChallengesPage";
-
+import { ChallengeProvider } from "./pages/ChallengeContext";
+import { ChallengesPage } from "./pages/ChallengesPage";
 
 
 function App() {
