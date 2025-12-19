@@ -1,13 +1,12 @@
 import React, {
   createContext,
-  useContext,
   useState,
   useEffect,
   ReactNode,
 } from "react";
 import { Challenge, ChallengeLog } from "../features/challenges/types";
 
-interface ChallengeContextType {
+export interface ChallengeContextType {
   activeChallenges: Challenge[];
   communityChallenges: Challenge[];
   logs: ChallengeLog[];
@@ -19,7 +18,7 @@ interface ChallengeContextType {
   getLogsForChallenge: (challengeId: string) => ChallengeLog[];
 }
 
-const ChallengeContext = createContext<ChallengeContextType | undefined>(
+export const ChallengeContext = createContext<ChallengeContextType | undefined>(
   undefined
 );
 
@@ -166,10 +165,3 @@ export const ChallengeProvider: React.FC<{ children: ReactNode }> = ({
   );
 };
 
-export const useChallenges = () => {
-  const context = useContext(ChallengeContext);
-  if (context === undefined) {
-    throw new Error("useChallenges must be used within a ChallengeProvider");
-  }
-  return context;
-};
