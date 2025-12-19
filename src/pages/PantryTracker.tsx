@@ -1,189 +1,36 @@
-import React, { useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 import RecipeFinder from "../components/nutrition/RecipeFinder";
 import DailyTracker from "../components/nutrition/DailyTracker";
 import CalorieCalculator from "../components/nutrition/CalorieCalculator";
-
-interface RecipeDetail {
-  id: number;
-  title: string;
-  image: string;
-  readyInMinutes: number;
-  servings: number;
-  summary: string;
-  instructions: string;
-  extendedIngredients: Array<{
-    id: number;
-    name: string;
-    amount: number;
-    unit: string;
-  }>;
-  nutrition?: {
-    nutrients: Array<{
-      name: string;
-      amount: number;
-      unit: string;
-    }>;
-  };
-}
-
-interface MealLog {
-  id: string;
-  mealType: "breakfast" | "lunch" | "dinner" | "snack";
-  name: string;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fats: number;
-  image?: string;
-  time: string;
-  date: string; // YYYY-MM-DD format
-}
-
-const API_KEY = import.meta.env.VITE_SPOONACULAR_API_KEY;
-const BASE_URL = "https://api.spoonacular.com";
+import RecipeDetailModal from "../components/nutrition/RecipeDetailModal";
+import { useRecipes } from "../hooks/useRecipes";
+import { useMealLogs } from "../hooks/useMealLogs";
+import { useUserProfile } from "../hooks/useUserProfile";
 
 const PantryTracker = () => {
   const [activeTab, setActiveTab] = useState<
     "finder" | "tracker" | "calculator"
   >("finder");
-  const [recipes, setRecipes] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedRecipe, setSelectedRecipe] = useState<RecipeDetail | null>(
-    null
-  );
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showAddToMealModal, setShowAddToMealModal] = useState(false);
 
-  // Daily Tracking with localStorage
-  const [mealLogs, setMealLogs] = useState<MealLog[]>(() => {
-    const saved = localStorage.getItem("platewise_meal_logs");
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [dailyGoal, setDailyGoal] = useState(() => {
-    const saved = localStorage.getItem("platewise_daily_goal");
-    return saved
-      ? JSON.parse(saved)
-      : {
-          calories: 2000,
-          protein: 150,
-          carbs: 250,
-          fats: 65,
-        };
-  });
+  // Custom hooks
+  const {
+    recipes,
+    setRecipes,
+    selectedRecipe,
+    isLoading,
+    setIsLoading,
+    error,
+    setError,
+    isModalOpen,
+    showAddToMealModal,
+    setShowAddToMealModal,
+    fetchRecipeDetails,
+    closeModal,
+  } = useRecipes();
 
-  // Save meal logs to localStorage whenever it changes
-  React.useEffect(() => {
-    localStorage.setItem("platewise_meal_logs", JSON.stringify(mealLogs));
-  }, [mealLogs]);
+  const { mealLogs, dailyGoal, addMealLog, deleteMealLog } = useMealLogs();
 
-  // Save daily goal to localStorage
-  React.useEffect(() => {
-    localStorage.setItem("platewise_daily_goal", JSON.stringify(dailyGoal));
-  }, [dailyGoal]);
-
-  // Calorie Calculator
-  const [userProfile, setUserProfile] = useState(() => {
-    const saved = localStorage.getItem("platewise_user_profile");
-    return saved
-      ? JSON.parse(saved)
-      : {
-          age: 25,
-          gender: "male" as "male" | "female",
-          weight: 70,
-          height: 170,
-          activityLevel: "moderate",
-        };
-  });
-
-  // Save user profile to localStorage
-  React.useEffect(() => {
-    localStorage.setItem("platewise_user_profile", JSON.stringify(userProfile));
-  }, [userProfile]);
-
-  const fetchRecipeDetails = async (recipeId: number) => {
-    if (!API_KEY) {
-      setError(
-        "API key is missing. Please add VITE_SPOONACULAR_API_KEY to your .env file."
-      );
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await axios.get(
-        `${BASE_URL}/recipes/${recipeId}/information`,
-        {
-          params: {
-            apiKey: API_KEY,
-            includeNutrition: true,
-          },
-        }
-      );
-
-      // 🔍 CONSOLE LOG: Xem chi tiết recipe khi click vào món ăn
-      console.log("=== RECIPE DETAIL API RESPONSE ===");
-      console.log("Recipe ID:", recipeId);
-      console.log("Full Recipe Data:", response.data);
-      console.log("-----------------------------------");
-      console.log("Title:", response.data.title);
-      console.log("Image:", response.data.image);
-      console.log("Servings:", response.data.servings);
-      console.log("Ready in Minutes:", response.data.readyInMinutes);
-      console.log("Prep Minutes:", response.data.preparationMinutes);
-      console.log("Cook Minutes:", response.data.cookingMinutes);
-      console.log("-----------------------------------");
-      console.log("Cuisines:", response.data.cuisines);
-      console.log("Dish Types:", response.data.dishTypes);
-      console.log("Diets:", response.data.diets);
-      console.log("-----------------------------------");
-      console.log("Ingredients:", response.data.extendedIngredients);
-      console.log("Nutrition:", response.data.nutrition);
-      console.log("Instructions:", response.data.analyzedInstructions);
-      console.log("===================================");
-
-      setSelectedRecipe(response.data);
-      setIsModalOpen(true);
-    } catch (err: any) {
-      console.error("Error fetching recipe details:", err);
-      setError(
-        err.response?.data?.message || "Failed to fetch recipe details."
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setShowAddToMealModal(false);
-    setTimeout(() => setSelectedRecipe(null), 300);
-  };
-
-  const addMealLog = (
-    meal: Omit<MealLog, "id" | "time" | "date">,
-    date?: string
-  ) => {
-    const now = new Date();
-    const targetDate = date || now.toISOString().split("T")[0];
-    const newMeal: MealLog = {
-      ...meal,
-      id: Date.now().toString(),
-      time: now.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      date: targetDate, // Use provided date or today
-    };
-    setMealLogs((prev) => [...prev, newMeal]);
-  };
-
-  const deleteMealLog = (id: string) => {
-    setMealLogs((prev) => prev.filter((meal) => meal.id !== id));
-  };
+  const { userProfile, setUserProfile } = useUserProfile();
 
   const addRecipeToMealLog = (
     mealType: "breakfast" | "lunch" | "dinner" | "snack"
@@ -219,13 +66,13 @@ const PantryTracker = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 pt-20">
+    <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-emerald-50 pt-20">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between gap-3 mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 rounded-xl bg-linear-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg">
                 <svg
                   className="w-7 h-7 text-white"
                   fill="none"
@@ -361,7 +208,7 @@ const PantryTracker = () => {
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
             <svg
-              className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5"
+              className="w-5 h-5 text-red-500 shrink-0 mt-0.5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -375,19 +222,6 @@ const PantryTracker = () => {
             </svg>
             <div>
               <p className="text-red-800 font-medium">{error}</p>
-              {!API_KEY && (
-                <p className="text-red-600 text-sm mt-1">
-                  Get your free API key at:{" "}
-                  <a
-                    href="https://spoonacular.com/food-api"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline hover:text-red-700"
-                  >
-                    spoonacular.com/food-api
-                  </a>
-                </p>
-              )}
             </div>
             <button
               onClick={() => setError(null)}
@@ -441,262 +275,14 @@ const PantryTracker = () => {
       </div>
 
       {/* Recipe Detail Modal */}
-      {isModalOpen && selectedRecipe && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 animate-fade-up"
-          onClick={closeModal}
-        >
-          <div
-            className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
-              <h2 className="text-2xl font-bold text-gray-900 pr-4">
-                {selectedRecipe.title}
-              </h2>
-              <button
-                onClick={closeModal}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
-              >
-                <svg
-                  className="w-6 h-6 text-gray-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Modal Content */}
-            <div className="p-6">
-              {/* Recipe Image */}
-              <div className="relative h-64 md:h-96 rounded-xl overflow-hidden mb-6">
-                <img
-                  src={selectedRecipe.image}
-                  alt={selectedRecipe.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              {/* Quick Info */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-green-50 rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-green-600">
-                    {selectedRecipe.readyInMinutes}
-                  </div>
-                  <div className="text-sm text-gray-600">Minutes</div>
-                </div>
-                <div className="bg-blue-50 rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-blue-600">
-                    {selectedRecipe.servings}
-                  </div>
-                  <div className="text-sm text-gray-600">Servings</div>
-                </div>
-                {selectedRecipe.nutrition?.nutrients && (
-                  <>
-                    <div className="bg-orange-50 rounded-xl p-4 text-center">
-                      <div className="text-2xl font-bold text-orange-600">
-                        {Math.round(
-                          selectedRecipe.nutrition.nutrients.find(
-                            (n) => n.name === "Calories"
-                          )?.amount || 0
-                        )}
-                      </div>
-                      <div className="text-sm text-gray-600">Calories</div>
-                    </div>
-                    <div className="bg-purple-50 rounded-xl p-4 text-center">
-                      <div className="text-2xl font-bold text-purple-600">
-                        {Math.round(
-                          selectedRecipe.nutrition.nutrients.find(
-                            (n) => n.name === "Protein"
-                          )?.amount || 0
-                        )}
-                        g
-                      </div>
-                      <div className="text-sm text-gray-600">Protein</div>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Summary */}
-              {selectedRecipe.summary && (
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">
-                    Summary
-                  </h3>
-                  <div
-                    className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{ __html: selectedRecipe.summary }}
-                  />
-                </div>
-              )}
-
-              {/* Ingredients */}
-              <div className="mb-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  Ingredients
-                </h3>
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <ul className="space-y-2">
-                    {selectedRecipe.extendedIngredients.map((ingredient) => (
-                      <li
-                        key={ingredient.id}
-                        className="flex items-start gap-2"
-                      >
-                        <svg
-                          className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                        <span className="text-gray-700">
-                          <span className="font-semibold">
-                            {ingredient.amount} {ingredient.unit}
-                          </span>{" "}
-                          {ingredient.name}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Nutrition Details */}
-              {selectedRecipe.nutrition?.nutrients && (
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">
-                    Nutrition Facts
-                  </h3>
-                  <div className="bg-gray-50 rounded-xl p-4">
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      {selectedRecipe.nutrition.nutrients
-                        .slice(0, 9)
-                        .map((nutrient, index) => (
-                          <div
-                            key={index}
-                            className="flex justify-between items-center p-3 bg-white rounded-lg"
-                          >
-                            <span className="text-gray-600 text-sm">
-                              {nutrient.name}
-                            </span>
-                            <span className="font-semibold text-gray-900">
-                              {Math.round(nutrient.amount)}
-                              {nutrient.unit}
-                            </span>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Instructions */}
-              {selectedRecipe.instructions && (
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">
-                    Instructions
-                  </h3>
-                  <div
-                    className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{
-                      __html: selectedRecipe.instructions,
-                    }}
-                  />
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="flex flex-col gap-3 pt-4 border-t border-gray-200">
-                {/* Warning if no nutrition info */}
-                {!selectedRecipe.nutrition?.nutrients && (
-                  <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4 mb-2">
-                    <div className="flex items-start gap-3">
-                      <svg
-                        className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                        />
-                      </svg>
-                      <div>
-                        <p className="font-semibold text-yellow-900 mb-1">
-                          Nutrition info not available
-                        </p>
-                        <p className="text-sm text-yellow-800">
-                          This recipe doesn't have nutrition data. After adding,
-                          you can manually enter calories and macros in the{" "}
-                          <strong>Daily Tracker</strong> tab by using the "Add
-                          Meal or Food" button.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <button
-                  onClick={() => setShowAddToMealModal(!showAddToMealModal)}
-                  className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
-                >
-                  {selectedRecipe.nutrition?.nutrients
-                    ? "Add to Daily Tracker"
-                    : "Add (Manual Entry Required)"}
-                </button>
-
-                {showAddToMealModal && (
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 p-4 bg-green-50 rounded-xl">
-                    <button
-                      onClick={() => addRecipeToMealLog("breakfast")}
-                      className="py-2 px-4 bg-white hover:bg-green-100 text-gray-900 font-medium rounded-lg transition-colors"
-                    >
-                      🌅 Breakfast
-                    </button>
-                    <button
-                      onClick={() => addRecipeToMealLog("lunch")}
-                      className="py-2 px-4 bg-white hover:bg-green-100 text-gray-900 font-medium rounded-lg transition-colors"
-                    >
-                      ☀️ Lunch
-                    </button>
-                    <button
-                      onClick={() => addRecipeToMealLog("dinner")}
-                      className="py-2 px-4 bg-white hover:bg-green-100 text-gray-900 font-medium rounded-lg transition-colors"
-                    >
-                      🌙 Dinner
-                    </button>
-                    <button
-                      onClick={() => addRecipeToMealLog("snack")}
-                      className="py-2 px-4 bg-white hover:bg-green-100 text-gray-900 font-medium rounded-lg transition-colors"
-                    >
-                      🍪 Snack
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <RecipeDetailModal
+        recipe={selectedRecipe!}
+        isOpen={isModalOpen && selectedRecipe !== null}
+        onClose={closeModal}
+        onAddToMeal={addRecipeToMealLog}
+        showAddToMealModal={showAddToMealModal}
+        setShowAddToMealModal={setShowAddToMealModal}
+      />
     </div>
   );
 };

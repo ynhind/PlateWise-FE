@@ -46,7 +46,10 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
 
   // Save to localStorage whenever savedRecipes changes
   React.useEffect(() => {
-    localStorage.setItem("platewise_saved_recipes", JSON.stringify(savedRecipes));
+    localStorage.setItem(
+      "platewise_saved_recipes",
+      JSON.stringify(savedRecipes)
+    );
   }, [savedRecipes]);
 
   const toggleSaveRecipe = (recipeId: number, event: React.MouseEvent) => {
@@ -341,7 +344,11 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
                           ? "text-white"
                           : "text-gray-600"
                       }`}
-                      fill={savedRecipes.includes(recipe.id) ? "currentColor" : "none"}
+                      fill={
+                        savedRecipes.includes(recipe.id)
+                          ? "currentColor"
+                          : "none"
+                      }
                       stroke="currentColor"
                       strokeWidth={savedRecipes.includes(recipe.id) ? "0" : "2"}
                       viewBox="0 0 24 24"
