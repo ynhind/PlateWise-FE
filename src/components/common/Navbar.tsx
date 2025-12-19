@@ -1,19 +1,30 @@
 import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation()
 
   const navLinks = [
+    { name: "Home", href: "/" },
     { name: "Pantry Tracker", href: "/pantry-tracker" },
     { name: "Challenges", href: "/challenges" },
     { name: "Community", href: "/community" },
   ];
 
+  const getLinkClass = (path: string) => {
+    const baseClass = "px-3 py-2 rounded-lg font-medium transition-colors duration-200";
+    if (location.pathname === path) {
+      return `${baseClass} text-green-600 bg-green-50`; // Active: Màu xanh, nền xanh nhạt
+    }
+    return `${baseClass} text-gray-600 hover:text-gray-900 hover:bg-gray-100`; // Normal
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          <a href="#" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2 group">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-glow transition-all duration-300"
               style={{
@@ -48,18 +59,18 @@ const Navbar = () => {
                 Wise
               </span>
             </span>
-          </a>
+          </Link>
 
           {/* Cho desktop Nav*/}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
-                className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200"
+                to={link.href}
+                className={getLinkClass(link.href)}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -120,14 +131,14 @@ const Navbar = () => {
           <div className="md:hidden py-4 border-t border-gray-200 animate-fade-up">
             <div className="flex flex-col gap-3">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.name}
-                  href={link.href}
+                  to={link.href}
                   className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-green-50 rounded-lg font-medium transition-all"
                   onClick={() => setIsOpen(false)}
                 >
                   {link.name}
-                </a>
+                </Link>
               ))}
               <div className="flex flex-col gap-2 px-4 pt-3 border-t border-gray-200">
                 <button className="w-full py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-green-50 rounded-lg transition-all">
