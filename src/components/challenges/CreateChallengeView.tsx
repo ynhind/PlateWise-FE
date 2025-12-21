@@ -6,6 +6,10 @@ interface CreateChallengeViewProps {
     onSuccess: () => void;
 }
 
+const gradientStyle = {
+    background: "linear-gradient(135deg, #22c55e 0%, #10b981 100%)",
+};
+
 export const CreateChallengeView: React.FC<CreateChallengeViewProps> = ({
     onBack,
     onSuccess,
@@ -15,6 +19,7 @@ export const CreateChallengeView: React.FC<CreateChallengeViewProps> = ({
         title: "",
         description: "",
         duration: 7,
+        tags: "", 
     });
     const [file, setFile] = useState<File | null>(null);
 
@@ -24,11 +29,16 @@ export const CreateChallengeView: React.FC<CreateChallengeViewProps> = ({
             ? URL.createObjectURL(file)
             : "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80";
 
+        const tagsArray = formData.tags
+            ? formData.tags.split(',').map(t => t.trim()).filter(t => t.length > 0)
+            : ["Personal"];
+
         createChallenge({
             title: formData.title,
             description: formData.description,
             duration: Number(formData.duration),
             coverImage,
+            tags: tagsArray
         });
         onSuccess();
     };
@@ -37,86 +47,93 @@ export const CreateChallengeView: React.FC<CreateChallengeViewProps> = ({
         <div className="max-w-2xl mx-auto animate-[fade-in_0.3s_ease-out]">
             <button
                 onClick={onBack}
-                className="mb-6 px-4 py-2 bg-white border border-indigo-600 text-indigo-600 rounded-full font-semibold hover:bg-indigo-50 transition-colors"
+                className="mb-8 px-5 py-2 bg-white border border-gray-200 text-gray-600 rounded-full font-semibold hover:bg-green-50 hover:border-green-200 hover:text-green-700 transition-colors flex items-center gap-2"
             >
-                ← Back
+                <span>←</span> Back
             </button>
 
-            <h2 className="text-3xl font-bold mb-6 text-slate-900">
-                Create New Challenge
-            </h2>
+            <div className="bg-white p-8 md:p-10 rounded-3xl shadow-xl shadow-green-900/5 border border-gray-100">
+                <h2 className="text-3xl font-bold mb-8 text-gray-900">
+                    Create New Challenge
+                </h2>
 
-            <form
-                onSubmit={handleSubmit}
-                className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 space-y-6"
-            >
-                <div>
-                    <label className="block text-slate-700 font-semibold mb-2">
-                        Challenge Title
-                    </label>
-                    <input
-                        className="w-full p-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-colors"
-                        value={formData.title}
-                        onChange={(e) =>
-                            setFormData({ ...formData, title: e.target.value })
-                        }
-                        required
-                        placeholder="e.g., No Sugar Week"
-                    />
-                </div>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label className="block text-gray-700 font-semibold mb-2">
+                            Challenge Title
+                        </label>
+                        <input
+                            className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition-all"
+                            value={formData.title}
+                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                            required
+                            placeholder="e.g., No Sugar Week"
+                        />
+                    </div>
 
-                <div>
-                    <label className="block text-slate-700 font-semibold mb-2">
-                        Description
-                    </label>
-                    <textarea
-                        className="w-full p-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-colors"
-                        rows={3}
-                        value={formData.description}
-                        onChange={(e) =>
-                            setFormData({ ...formData, description: e.target.value })
-                        }
-                        required
-                        placeholder="What's the goal?"
-                    />
-                </div>
+                    <div>
+                        <label className="block text-gray-700 font-semibold mb-2">
+                            Description
+                        </label>
+                        <textarea
+                            className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition-all"
+                            rows={3}
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            required
+                            placeholder="What's the goal?"
+                        />
+                    </div>
 
-                <div>
-                    <label className="block text-slate-700 font-semibold mb-2">
-                        Duration (Days)
-                    </label>
-                    <input
-                        type="number"
-                        min="1"
-                        max="365"
-                        className="w-full p-3 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-colors"
-                        value={formData.duration}
-                        onChange={(e) =>
-                            setFormData({ ...formData, duration: Number(e.target.value) })
-                        }
-                        required
-                    />
-                </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-gray-700 font-semibold mb-2">
+                                Duration (Days)
+                            </label>
+                            <input
+                                type="number"
+                                min="1"
+                                max="365"
+                                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition-all"
+                                value={formData.duration}
+                                onChange={(e) => setFormData({ ...formData, duration: Number(e.target.value) })}
+                                required
+                            />
+                        </div>
+                         <div>
+                            <label className="block text-gray-700 font-semibold mb-2">
+                                Tags (comma separated)
+                            </label>
+                            <input
+                                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition-all"
+                                value={formData.tags}
+                                onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                                placeholder="Health, Budget, ..."
+                            />
+                        </div>
+                    </div>
 
-                <div>
-                    <label className="block text-slate-700 font-semibold mb-2">
-                        Cover Image
-                    </label>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        className="w-full p-2 border-2 border-slate-200 rounded-xl file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-                        onChange={(e) => setFile(e.target.files?.[0] || null)}
-                    />
-                </div>
+                    <div>
+                        <label className="block text-gray-700 font-semibold mb-2">
+                            Cover Image
+                        </label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            className="w-full p-3 border border-gray-200 rounded-xl file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-colors"
+                            onChange={(e) => setFile(e.target.files?.[0] || null)}
+                        />
+                    </div>
 
-                <button
-                    type="submit"
-                    className="w-full py-4 bg-indigo-600 text-white rounded-full font-bold text-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
-                >
-                    Create Challenge
-                </button>
-            </form>
+                    <button
+                        type="submit"
+                        className="w-full py-4 text-white rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all mt-4"
+                        style={gradientStyle}
+                    >
+                        Create Challenge
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };
