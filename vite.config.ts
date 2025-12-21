@@ -13,4 +13,13 @@ export default defineConfig({
   server: {
     port: 5713,
   },
+  resolve: {
+    alias: {
+      util: "util",
+      assert: "assert",
+    },
+  },
+  define: {
+    'process.env': {},
+  },
 });

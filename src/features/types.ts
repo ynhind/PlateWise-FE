@@ -47,7 +47,7 @@ export interface ASTPayload {
   // For RECIPE_SEARCH_BY_NAME
   recipeName?: string; // "pancake", "pasta carbonara"
 
-  // For RECIPE_SEARCH_BY_CATEGORY
+  // For RECIPE_SEARCH_BY_CATEGORY 
   category?: RecipeCategory; // "healthy", "low-calorie", "vegetarian"
   mealTime?: MealType; // "breakfast", "lunch", "dinner", "snack"
 

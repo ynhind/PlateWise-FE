@@ -6,7 +6,7 @@
 
 import { useState } from "react";
 import { useChatbot } from "@/hooks/useChatbot";
-import type { AST } from "@/ppl/types";
+import type { AST } from "@/features/types";
 
 export const InterpreterTest = () => {
   const { messages, isProcessing, sendAST, clearHistory } = useChatbot();
@@ -28,7 +28,7 @@ export const InterpreterTest = () => {
     "Recipe Search - Name": {
       type: "RECIPE_SEARCH_BY_NAME",
       payload: {
-        query: "pasta carbonara",
+        recipeName: "pasta carbonara",
       },
       metadata: {
         originalInput: "tìm công thức pasta carbonara",
@@ -70,7 +70,7 @@ export const InterpreterTest = () => {
       type: "MEAL_SUGGESTION",
       payload: {
         mealType: "dinner",
-        maxCalories: 600,
+        targetCalories: 600,
         dietaryRestrictions: ["vegetarian"],
       },
       metadata: {

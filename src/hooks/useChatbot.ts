@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Interpreter } from "@/ppl/interpreter";
+import { Interpreter } from "@/features/interpreter";
 import { useRecipes } from "./useRecipes";
 import { useMealLogs } from "./useMealLogs";
 import { useUserProfile } from "./useUserProfile";
-import type { AST, InterpreterResponse } from "@/ppl/types";
+import type { AST, InterpreterResponse } from "@/features/types";
 
 interface ChatMessage {
   id: string;

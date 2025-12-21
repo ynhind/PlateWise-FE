@@ -6,7 +6,7 @@
  *
  * Usage:
  * ```typescript
- * import { Interpreter } from "@/ppl/interpreter";
+ * import { Interpreter } from "@/features/interpreter";
  * import { useRecipes } from "@/hooks/useRecipes";
  * import { useMealLogs } from "@/hooks/useMealLogs";
  * import { useUserProfile } from "@/hooks/useUserProfile";
