@@ -61,17 +61,21 @@ export class ChatbotCommandsParser extends Parser {
 	public static readonly ENOUGH = 31;
 	public static readonly MEAL = 32;
 	public static readonly MEALS = 33;
-	public static readonly COLON = 34;
-	public static readonly COMMA = 35;
-	public static readonly MEAL_TIME_KW = 36;
-	public static readonly CATEGORY_KW = 37;
-	public static readonly NUTRIENT = 38;
-	public static readonly TIME_RANGE_KW = 39;
-	public static readonly UNIT_CAL = 40;
-	public static readonly NUMBER = 41;
-	public static readonly WORD = 42;
-	public static readonly WS = 43;
-	public static readonly SEARCH = 44;
+	public static readonly CREATE = 34;
+	public static readonly MAKE = 35;
+	public static readonly GENERATE = 36;
+	public static readonly SAVE = 37;
+	public static readonly COLON = 38;
+	public static readonly COMMA = 39;
+	public static readonly MEAL_TIME_KW = 40;
+	public static readonly CATEGORY_KW = 41;
+	public static readonly NUTRIENT = 42;
+	public static readonly TIME_RANGE_KW = 43;
+	public static readonly UNIT_CAL = 44;
+	public static readonly NUMBER = 45;
+	public static readonly WORD = 46;
+	public static readonly WS = 47;
+	public static readonly SEARCH = 48;
 	public static readonly RULE_command = 0;
 	public static readonly RULE_searchByIngredients = 1;
 	public static readonly RULE_ingredientList = 2;
@@ -108,15 +112,17 @@ export class ChatbotCommandsParser extends Parser {
 		undefined, "'am i eating'", "'do i have'", "'did i eat'", "'is'", undefined, 
 		"'and'", "'me'", "'my'", undefined, "'this'", "'to'", "'for'", "'recipe'", 
 		"'recipes'", "'ideas'", "'options'", "'diet'", "'balanced'", "'enough'", 
-		"'meal'", "'meals'", "':'", "','",
+		"'meal'", "'meals'", "'create'", "'make'", "'generate'", "'save'", "':'", 
+		"','",
 	];
 	private static readonly _SYMBOLIC_NAMES: Array<string | undefined> = [
 		undefined, "FIND", "SHOW", "SEARCH_FOR", "SUGGEST", "RECOMMEND", "PLAN", 
 		"ADD", "LOG", "WHAT_CAN_I_COOK", "HOW_MUCH", "CHECK", "INTAKE", "AM_I_EATING", 
 		"DO_I_HAVE", "DID_I_EAT", "IS", "WITH", "AND", "ME", "MY", "A", "THIS", 
 		"TO", "FOR", "RECIPE", "RECIPES", "IDEAS", "OPTIONS", "DIET", "BALANCED", 
-		"ENOUGH", "MEAL", "MEALS", "COLON", "COMMA", "MEAL_TIME_KW", "CATEGORY_KW", 
-		"NUTRIENT", "TIME_RANGE_KW", "UNIT_CAL", "NUMBER", "WORD", "WS", "SEARCH",
+		"ENOUGH", "MEAL", "MEALS", "CREATE", "MAKE", "GENERATE", "SAVE", "COLON", 
+		"COMMA", "MEAL_TIME_KW", "CATEGORY_KW", "NUTRIENT", "TIME_RANGE_KW", "UNIT_CAL", 
+		"NUMBER", "WORD", "WS", "SEARCH",
 	];
 	public static readonly VOCABULARY: Vocabulary = new VocabularyImpl(ChatbotCommandsParser._LITERAL_NAMES, ChatbotCommandsParser._SYMBOLIC_NAMES, []);
 
@@ -153,29 +159,29 @@ export class ChatbotCommandsParser extends Parser {
 			this._errHandler.sync(this);
 			switch ( this.interpreter.adaptivePredict(this._input, 0, this._ctx) ) {
 			case 1:
-				_localctx = new CmdSearchIngredientsContext(_localctx);
+				_localctx = new CmdSearchCategoryContext(_localctx);
 				this.enterOuterAlt(_localctx, 1);
 				{
 				this.state = 42;
-				this.searchByIngredients();
+				this.searchByCategory();
 				}
 				break;
 
 			case 2:
-				_localctx = new CmdSearchNameContext(_localctx);
+				_localctx = new CmdSearchIngredientsContext(_localctx);
 				this.enterOuterAlt(_localctx, 2);
 				{
 				this.state = 43;
-				this.searchByName();
+				this.searchByIngredients();
 				}
 				break;
 
 			case 3:
-				_localctx = new CmdSearchCategoryContext(_localctx);
+				_localctx = new CmdSearchNameContext(_localctx);
 				this.enterOuterAlt(_localctx, 3);
 				{
 				this.state = 44;
-				this.searchByCategory();
+				this.searchByName();
 				}
 				break;
 
@@ -272,7 +278,7 @@ export class ChatbotCommandsParser extends Parser {
 		this.enterRule(_localctx, 2, ChatbotCommandsParser.RULE_searchByIngredients);
 		let _la: number;
 		try {
-			this.state = 66;
+			this.state = 64;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case ChatbotCommandsParser.FIND:
@@ -302,28 +308,20 @@ export class ChatbotCommandsParser extends Parser {
 					}
 				}
 
+				this.state = 59;
+				this.match(ChatbotCommandsParser.WITH);
 				this.state = 60;
-				this._errHandler.sync(this);
-				_la = this._input.LA(1);
-				if (_la === ChatbotCommandsParser.WITH) {
-					{
-					this.state = 59;
-					this.match(ChatbotCommandsParser.WITH);
-					}
-				}
-
-				this.state = 62;
 				this.ingredientList();
 				}
 				break;
 			case ChatbotCommandsParser.WHAT_CAN_I_COOK:
 				this.enterOuterAlt(_localctx, 2);
 				{
-				this.state = 63;
+				this.state = 61;
 				this.match(ChatbotCommandsParser.WHAT_CAN_I_COOK);
-				this.state = 64;
+				this.state = 62;
 				this.match(ChatbotCommandsParser.WITH);
-				this.state = 65;
+				this.state = 63;
 				this.ingredientList();
 				}
 				break;
@@ -353,21 +351,21 @@ export class ChatbotCommandsParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 68;
+			this.state = 66;
 			this.ingredient();
-			this.state = 74;
+			this.state = 72;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			while (_la === ChatbotCommandsParser.AND || _la === ChatbotCommandsParser.COMMA) {
 				{
 				{
-				this.state = 69;
+				this.state = 67;
 				this.separator();
-				this.state = 70;
+				this.state = 68;
 				this.ingredient();
 				}
 				}
-				this.state = 76;
+				this.state = 74;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
@@ -395,7 +393,7 @@ export class ChatbotCommandsParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 77;
+			this.state = 75;
 			_la = this._input.LA(1);
 			if (!(_la === ChatbotCommandsParser.AND || _la === ChatbotCommandsParser.COMMA)) {
 			this._errHandler.recoverInline(this);
@@ -431,17 +429,17 @@ export class ChatbotCommandsParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 80;
+			this.state = 78;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			do {
 				{
 				{
-				this.state = 79;
+				this.state = 77;
 				this.match(ChatbotCommandsParser.WORD);
 				}
 				}
-				this.state = 82;
+				this.state = 80;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			} while (_la === ChatbotCommandsParser.WORD);
@@ -467,32 +465,32 @@ export class ChatbotCommandsParser extends Parser {
 		this.enterRule(_localctx, 10, ChatbotCommandsParser.RULE_searchByName);
 		let _la: number;
 		try {
-			this.state = 97;
+			this.state = 95;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case ChatbotCommandsParser.SHOW:
 				this.enterOuterAlt(_localctx, 1);
 				{
-				this.state = 84;
+				this.state = 82;
 				this.match(ChatbotCommandsParser.SHOW);
-				this.state = 86;
+				this.state = 84;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la === ChatbotCommandsParser.ME) {
 					{
-					this.state = 85;
+					this.state = 83;
 					this.match(ChatbotCommandsParser.ME);
 					}
 				}
 
-				this.state = 88;
+				this.state = 86;
 				this.recipeNamePhrase();
-				this.state = 90;
+				this.state = 88;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la === ChatbotCommandsParser.RECIPE) {
 					{
-					this.state = 89;
+					this.state = 87;
 					this.match(ChatbotCommandsParser.RECIPE);
 					}
 				}
@@ -503,7 +501,7 @@ export class ChatbotCommandsParser extends Parser {
 			case ChatbotCommandsParser.SEARCH_FOR:
 				this.enterOuterAlt(_localctx, 2);
 				{
-				this.state = 92;
+				this.state = 90;
 				_la = this._input.LA(1);
 				if (!(_la === ChatbotCommandsParser.FIND || _la === ChatbotCommandsParser.SEARCH_FOR)) {
 				this._errHandler.recoverInline(this);
@@ -515,14 +513,14 @@ export class ChatbotCommandsParser extends Parser {
 					this._errHandler.reportMatch(this);
 					this.consume();
 				}
-				this.state = 93;
+				this.state = 91;
 				this.recipeNamePhrase();
-				this.state = 95;
+				this.state = 93;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la === ChatbotCommandsParser.RECIPE) {
 					{
-					this.state = 94;
+					this.state = 92;
 					this.match(ChatbotCommandsParser.RECIPE);
 					}
 				}
@@ -555,17 +553,17 @@ export class ChatbotCommandsParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 100;
+			this.state = 98;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			do {
 				{
 				{
-				this.state = 99;
+				this.state = 97;
 				this.match(ChatbotCommandsParser.WORD);
 				}
 				}
-				this.state = 102;
+				this.state = 100;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			} while (_la === ChatbotCommandsParser.WORD);
@@ -593,7 +591,7 @@ export class ChatbotCommandsParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 104;
+			this.state = 102;
 			_la = this._input.LA(1);
 			if (!((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << ChatbotCommandsParser.FIND) | (1 << ChatbotCommandsParser.SHOW) | (1 << ChatbotCommandsParser.SUGGEST))) !== 0))) {
 			this._errHandler.recoverInline(this);
@@ -605,32 +603,32 @@ export class ChatbotCommandsParser extends Parser {
 				this._errHandler.reportMatch(this);
 				this.consume();
 			}
-			this.state = 106;
+			this.state = 104;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			if (_la === ChatbotCommandsParser.CATEGORY_KW) {
 				{
-				this.state = 105;
+				this.state = 103;
 				this.category();
 				}
 			}
 
-			this.state = 109;
+			this.state = 107;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			if (_la === ChatbotCommandsParser.MEAL_TIME_KW) {
 				{
-				this.state = 108;
+				this.state = 106;
 				this.mealTime();
 				}
 			}
 
-			this.state = 112;
+			this.state = 110;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			if ((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << ChatbotCommandsParser.RECIPES) | (1 << ChatbotCommandsParser.IDEAS) | (1 << ChatbotCommandsParser.OPTIONS))) !== 0)) {
 				{
-				this.state = 111;
+				this.state = 109;
 				_la = this._input.LA(1);
 				if (!((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << ChatbotCommandsParser.RECIPES) | (1 << ChatbotCommandsParser.IDEAS) | (1 << ChatbotCommandsParser.OPTIONS))) !== 0))) {
 				this._errHandler.recoverInline(this);
@@ -667,14 +665,14 @@ export class ChatbotCommandsParser extends Parser {
 		this.enterRule(_localctx, 16, ChatbotCommandsParser.RULE_nutritionQuery);
 		let _la: number;
 		try {
-			this.state = 130;
+			this.state = 128;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case ChatbotCommandsParser.SHOW:
 			case ChatbotCommandsParser.CHECK:
 				this.enterOuterAlt(_localctx, 1);
 				{
-				this.state = 114;
+				this.state = 112;
 				_la = this._input.LA(1);
 				if (!(_la === ChatbotCommandsParser.SHOW || _la === ChatbotCommandsParser.CHECK)) {
 				this._errHandler.recoverInline(this);
@@ -686,34 +684,34 @@ export class ChatbotCommandsParser extends Parser {
 					this._errHandler.reportMatch(this);
 					this.consume();
 				}
-				this.state = 116;
+				this.state = 114;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la === ChatbotCommandsParser.MY) {
 					{
-					this.state = 115;
+					this.state = 113;
 					this.match(ChatbotCommandsParser.MY);
 					}
 				}
 
-				this.state = 118;
+				this.state = 116;
 				this.match(ChatbotCommandsParser.NUTRIENT);
-				this.state = 120;
+				this.state = 118;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la === ChatbotCommandsParser.INTAKE) {
 					{
-					this.state = 119;
+					this.state = 117;
 					this.match(ChatbotCommandsParser.INTAKE);
 					}
 				}
 
-				this.state = 123;
+				this.state = 121;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la === ChatbotCommandsParser.TIME_RANGE_KW) {
 					{
-					this.state = 122;
+					this.state = 120;
 					this.timeRange();
 					}
 				}
@@ -723,16 +721,16 @@ export class ChatbotCommandsParser extends Parser {
 			case ChatbotCommandsParser.HOW_MUCH:
 				this.enterOuterAlt(_localctx, 2);
 				{
-				this.state = 125;
+				this.state = 123;
 				this.match(ChatbotCommandsParser.HOW_MUCH);
-				this.state = 126;
+				this.state = 124;
 				this.match(ChatbotCommandsParser.DID_I_EAT);
-				this.state = 128;
+				this.state = 126;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la === ChatbotCommandsParser.TIME_RANGE_KW) {
 					{
-					this.state = 127;
+					this.state = 125;
 					this.timeRange();
 					}
 				}
@@ -765,18 +763,18 @@ export class ChatbotCommandsParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 132;
+			this.state = 130;
 			this.match(ChatbotCommandsParser.HOW_MUCH);
-			this.state = 133;
+			this.state = 131;
 			this.match(ChatbotCommandsParser.NUTRIENT);
-			this.state = 134;
+			this.state = 132;
 			this.match(ChatbotCommandsParser.DID_I_EAT);
-			this.state = 136;
+			this.state = 134;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			if (_la === ChatbotCommandsParser.TIME_RANGE_KW) {
 				{
-				this.state = 135;
+				this.state = 133;
 				this.timeRange();
 				}
 			}
@@ -803,64 +801,64 @@ export class ChatbotCommandsParser extends Parser {
 		this.enterRule(_localctx, 20, ChatbotCommandsParser.RULE_mealSuggestion);
 		let _la: number;
 		try {
-			this.state = 154;
+			this.state = 152;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case ChatbotCommandsParser.SUGGEST:
 				this.enterOuterAlt(_localctx, 1);
 				{
-				this.state = 138;
+				this.state = 136;
 				this.match(ChatbotCommandsParser.SUGGEST);
-				this.state = 140;
+				this.state = 138;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la === ChatbotCommandsParser.A) {
 					{
-					this.state = 139;
+					this.state = 137;
 					this.match(ChatbotCommandsParser.A);
 					}
 				}
 
-				this.state = 143;
+				this.state = 141;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la === ChatbotCommandsParser.CATEGORY_KW) {
 					{
-					this.state = 142;
+					this.state = 140;
 					this.category();
 					}
 				}
 
-				this.state = 145;
+				this.state = 143;
 				this.mealTime();
 				}
 				break;
 			case ChatbotCommandsParser.RECOMMEND:
 				this.enterOuterAlt(_localctx, 2);
 				{
-				this.state = 146;
+				this.state = 144;
 				this.match(ChatbotCommandsParser.RECOMMEND);
-				this.state = 148;
+				this.state = 146;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la === ChatbotCommandsParser.A) {
 					{
-					this.state = 147;
+					this.state = 145;
 					this.match(ChatbotCommandsParser.A);
 					}
 				}
 
-				this.state = 151;
+				this.state = 149;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la === ChatbotCommandsParser.CATEGORY_KW) {
 					{
-					this.state = 150;
+					this.state = 148;
 					this.category();
 					}
 				}
 
-				this.state = 153;
+				this.state = 151;
 				this.mealTime();
 				}
 				break;
@@ -890,21 +888,9 @@ export class ChatbotCommandsParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 156;
-			this.match(ChatbotCommandsParser.PLAN);
-			this.state = 158;
-			this._errHandler.sync(this);
+			this.state = 154;
 			_la = this._input.LA(1);
-			if (_la === ChatbotCommandsParser.MY) {
-				{
-				this.state = 157;
-				this.match(ChatbotCommandsParser.MY);
-				}
-			}
-
-			this.state = 160;
-			_la = this._input.LA(1);
-			if (!(_la === ChatbotCommandsParser.MEAL || _la === ChatbotCommandsParser.MEALS)) {
+			if (!(((((_la - 6)) & ~0x1F) === 0 && ((1 << (_la - 6)) & ((1 << (ChatbotCommandsParser.PLAN - 6)) | (1 << (ChatbotCommandsParser.CREATE - 6)) | (1 << (ChatbotCommandsParser.MAKE - 6)) | (1 << (ChatbotCommandsParser.GENERATE - 6)))) !== 0))) {
 			this._errHandler.recoverInline(this);
 			} else {
 				if (this._input.LA(1) === Token.EOF) {
@@ -914,22 +900,72 @@ export class ChatbotCommandsParser extends Parser {
 				this._errHandler.reportMatch(this);
 				this.consume();
 			}
+			this.state = 156;
+			this._errHandler.sync(this);
+			_la = this._input.LA(1);
+			if (_la === ChatbotCommandsParser.MY || _la === ChatbotCommandsParser.A) {
+				{
+				this.state = 155;
+				_la = this._input.LA(1);
+				if (!(_la === ChatbotCommandsParser.MY || _la === ChatbotCommandsParser.A)) {
+				this._errHandler.recoverInline(this);
+				} else {
+					if (this._input.LA(1) === Token.EOF) {
+						this.matchedEOF = true;
+					}
+
+					this._errHandler.reportMatch(this);
+					this.consume();
+				}
+				}
+			}
+
+			this.state = 159;
+			this._errHandler.sync(this);
+			_la = this._input.LA(1);
+			if (_la === ChatbotCommandsParser.MEAL || _la === ChatbotCommandsParser.MEALS) {
+				{
+				this.state = 158;
+				_la = this._input.LA(1);
+				if (!(_la === ChatbotCommandsParser.MEAL || _la === ChatbotCommandsParser.MEALS)) {
+				this._errHandler.recoverInline(this);
+				} else {
+					if (this._input.LA(1) === Token.EOF) {
+						this.matchedEOF = true;
+					}
+
+					this._errHandler.reportMatch(this);
+					this.consume();
+				}
+				}
+			}
+
 			this.state = 162;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la === ChatbotCommandsParser.FOR) {
+			if (_la === ChatbotCommandsParser.PLAN) {
 				{
 				this.state = 161;
-				this.match(ChatbotCommandsParser.FOR);
+				this.match(ChatbotCommandsParser.PLAN);
 				}
 			}
 
 			this.state = 165;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la === ChatbotCommandsParser.TIME_RANGE_KW) {
+			if (_la === ChatbotCommandsParser.FOR) {
 				{
 				this.state = 164;
+				this.match(ChatbotCommandsParser.FOR);
+				}
+			}
+
+			this.state = 168;
+			this._errHandler.sync(this);
+			_la = this._input.LA(1);
+			if (_la === ChatbotCommandsParser.TIME_RANGE_KW) {
+				{
+				this.state = 167;
 				this.timeRange();
 				}
 			}
@@ -956,47 +992,47 @@ export class ChatbotCommandsParser extends Parser {
 		this.enterRule(_localctx, 24, ChatbotCommandsParser.RULE_dietCheck);
 		let _la: number;
 		try {
-			this.state = 178;
+			this.state = 181;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case ChatbotCommandsParser.IS:
 				this.enterOuterAlt(_localctx, 1);
 				{
-				this.state = 167;
+				this.state = 170;
 				this.match(ChatbotCommandsParser.IS);
-				this.state = 169;
+				this.state = 172;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 				if (_la === ChatbotCommandsParser.MY) {
 					{
-					this.state = 168;
+					this.state = 171;
 					this.match(ChatbotCommandsParser.MY);
 					}
 				}
 
-				this.state = 171;
+				this.state = 174;
 				this.match(ChatbotCommandsParser.DIET);
-				this.state = 172;
+				this.state = 175;
 				this.match(ChatbotCommandsParser.BALANCED);
 				}
 				break;
 			case ChatbotCommandsParser.AM_I_EATING:
 				this.enterOuterAlt(_localctx, 2);
 				{
-				this.state = 173;
-				this.match(ChatbotCommandsParser.AM_I_EATING);
 				this.state = 176;
+				this.match(ChatbotCommandsParser.AM_I_EATING);
+				this.state = 179;
 				this._errHandler.sync(this);
 				switch (this._input.LA(1)) {
 				case ChatbotCommandsParser.BALANCED:
 					{
-					this.state = 174;
+					this.state = 177;
 					this.match(ChatbotCommandsParser.BALANCED);
 					}
 					break;
 				case ChatbotCommandsParser.CATEGORY_KW:
 					{
-					this.state = 175;
+					this.state = 178;
 					this.category();
 					}
 					break;
@@ -1028,28 +1064,28 @@ export class ChatbotCommandsParser extends Parser {
 		let _localctx: NutrientCheckContext = new NutrientCheckContext(this._ctx, this.state);
 		this.enterRule(_localctx, 26, ChatbotCommandsParser.RULE_nutrientCheck);
 		try {
-			this.state = 186;
+			this.state = 189;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case ChatbotCommandsParser.AM_I_EATING:
 				this.enterOuterAlt(_localctx, 1);
 				{
-				this.state = 180;
+				this.state = 183;
 				this.match(ChatbotCommandsParser.AM_I_EATING);
-				this.state = 181;
+				this.state = 184;
 				this.match(ChatbotCommandsParser.ENOUGH);
-				this.state = 182;
+				this.state = 185;
 				this.match(ChatbotCommandsParser.NUTRIENT);
 				}
 				break;
 			case ChatbotCommandsParser.DO_I_HAVE:
 				this.enterOuterAlt(_localctx, 2);
 				{
-				this.state = 183;
+				this.state = 186;
 				this.match(ChatbotCommandsParser.DO_I_HAVE);
-				this.state = 184;
+				this.state = 187;
 				this.match(ChatbotCommandsParser.ENOUGH);
-				this.state = 185;
+				this.state = 188;
 				this.match(ChatbotCommandsParser.NUTRIENT);
 				}
 				break;
@@ -1077,45 +1113,52 @@ export class ChatbotCommandsParser extends Parser {
 		this.enterRule(_localctx, 28, ChatbotCommandsParser.RULE_logMealContext);
 		let _la: number;
 		try {
-			this.state = 198;
-			this._errHandler.sync(this);
-			switch (this._input.LA(1)) {
-			case ChatbotCommandsParser.ADD:
-				this.enterOuterAlt(_localctx, 1);
-				{
-				this.state = 188;
-				this.match(ChatbotCommandsParser.ADD);
-				this.state = 189;
-				this.match(ChatbotCommandsParser.THIS);
-				this.state = 190;
-				this.match(ChatbotCommandsParser.TO);
-				this.state = 191;
-				this.mealTime();
-				}
-				break;
-			case ChatbotCommandsParser.LOG:
-				this.enterOuterAlt(_localctx, 2);
-				{
-				this.state = 192;
-				this.match(ChatbotCommandsParser.LOG);
-				this.state = 193;
-				this.match(ChatbotCommandsParser.THIS);
-				this.state = 195;
-				this._errHandler.sync(this);
-				_la = this._input.LA(1);
-				if (_la === ChatbotCommandsParser.FOR) {
-					{
-					this.state = 194;
-					this.match(ChatbotCommandsParser.FOR);
-					}
+			this.enterOuterAlt(_localctx, 1);
+			{
+			this.state = 191;
+			_la = this._input.LA(1);
+			if (!(((((_la - 7)) & ~0x1F) === 0 && ((1 << (_la - 7)) & ((1 << (ChatbotCommandsParser.ADD - 7)) | (1 << (ChatbotCommandsParser.LOG - 7)) | (1 << (ChatbotCommandsParser.SAVE - 7)))) !== 0))) {
+			this._errHandler.recoverInline(this);
+			} else {
+				if (this._input.LA(1) === Token.EOF) {
+					this.matchedEOF = true;
 				}
 
-				this.state = 197;
-				this.mealTime();
+				this._errHandler.reportMatch(this);
+				this.consume();
+			}
+			this.state = 193;
+			this._errHandler.sync(this);
+			_la = this._input.LA(1);
+			if (_la === ChatbotCommandsParser.THIS) {
+				{
+				this.state = 192;
+				this.match(ChatbotCommandsParser.THIS);
 				}
-				break;
-			default:
-				throw new NoViableAltException(this);
+			}
+
+			this.state = 196;
+			this._errHandler.sync(this);
+			_la = this._input.LA(1);
+			if (_la === ChatbotCommandsParser.TO || _la === ChatbotCommandsParser.FOR) {
+				{
+				this.state = 195;
+				_la = this._input.LA(1);
+				if (!(_la === ChatbotCommandsParser.TO || _la === ChatbotCommandsParser.FOR)) {
+				this._errHandler.recoverInline(this);
+				} else {
+					if (this._input.LA(1) === Token.EOF) {
+						this.matchedEOF = true;
+					}
+
+					this._errHandler.reportMatch(this);
+					this.consume();
+				}
+				}
+			}
+
+			this.state = 198;
+			this.mealTime();
 			}
 		}
 		catch (re) {
@@ -1336,109 +1379,111 @@ export class ChatbotCommandsParser extends Parser {
 	}
 
 	public static readonly _serializedATN: string =
-		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03.\xE4\x04\x02" +
+		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x032\xE4\x04\x02" +
 		"\t\x02\x04\x03\t\x03\x04\x04\t\x04\x04\x05\t\x05\x04\x06\t\x06\x04\x07" +
 		"\t\x07\x04\b\t\b\x04\t\t\t\x04\n\t\n\x04\v\t\v\x04\f\t\f\x04\r\t\r\x04" +
 		"\x0E\t\x0E\x04\x0F\t\x0F\x04\x10\t\x10\x04\x11\t\x11\x04\x12\t\x12\x04" +
 		"\x13\t\x13\x04\x14\t\x14\x04\x15\t\x15\x04\x16\t\x16\x03\x02\x03\x02\x03" +
 		"\x02\x03\x02\x03\x02\x03\x02\x03\x02\x03\x02\x03\x02\x03\x02\x03\x02\x05" +
-		"\x028\n\x02\x03\x03\x03\x03\x05\x03<\n\x03\x03\x03\x05\x03?\n\x03\x03" +
-		"\x03\x03\x03\x03\x03\x03\x03\x05\x03E\n\x03\x03\x04\x03\x04\x03\x04\x03" +
-		"\x04\x07\x04K\n\x04\f\x04\x0E\x04N\v\x04\x03\x05\x03\x05\x03\x06\x06\x06" +
-		"S\n\x06\r\x06\x0E\x06T\x03\x07\x03\x07\x05\x07Y\n\x07\x03\x07\x03\x07" +
-		"\x05\x07]\n\x07\x03\x07\x03\x07\x03\x07\x05\x07b\n\x07\x05\x07d\n\x07" +
-		"\x03\b\x06\bg\n\b\r\b\x0E\bh\x03\t\x03\t\x05\tm\n\t\x03\t\x05\tp\n\t\x03" +
-		"\t\x05\ts\n\t\x03\n\x03\n\x05\nw\n\n\x03\n\x03\n\x05\n{\n\n\x03\n\x05" +
-		"\n~\n\n\x03\n\x03\n\x03\n\x05\n\x83\n\n\x05\n\x85\n\n\x03\v\x03\v\x03" +
-		"\v\x03\v\x05\v\x8B\n\v\x03\f\x03\f\x05\f\x8F\n\f\x03\f\x05\f\x92\n\f\x03" +
-		"\f\x03\f\x03\f\x05\f\x97\n\f\x03\f\x05\f\x9A\n\f\x03\f\x05\f\x9D\n\f\x03" +
-		"\r\x03\r\x05\r\xA1\n\r\x03\r\x03\r\x05\r\xA5\n\r\x03\r\x05\r\xA8\n\r\x03" +
-		"\x0E\x03\x0E\x05\x0E\xAC\n\x0E\x03\x0E\x03\x0E\x03\x0E\x03\x0E\x03\x0E" +
-		"\x05\x0E\xB3\n\x0E\x05\x0E\xB5\n\x0E\x03\x0F\x03\x0F\x03\x0F\x03\x0F\x03" +
-		"\x0F\x03\x0F\x05\x0F\xBD\n\x0F\x03\x10\x03\x10\x03\x10\x03\x10\x03\x10" +
-		"\x03\x10\x03\x10\x05\x10\xC6\n\x10\x03\x10\x05\x10\xC9\n\x10\x03\x11\x03" +
+		"\x028\n\x02\x03\x03\x03\x03\x05\x03<\n\x03\x03\x03\x03\x03\x03\x03\x03" +
+		"\x03\x03\x03\x05\x03C\n\x03\x03\x04\x03\x04\x03\x04\x03\x04\x07\x04I\n" +
+		"\x04\f\x04\x0E\x04L\v\x04\x03\x05\x03\x05\x03\x06\x06\x06Q\n\x06\r\x06" +
+		"\x0E\x06R\x03\x07\x03\x07\x05\x07W\n\x07\x03\x07\x03\x07\x05\x07[\n\x07" +
+		"\x03\x07\x03\x07\x03\x07\x05\x07`\n\x07\x05\x07b\n\x07\x03\b\x06\be\n" +
+		"\b\r\b\x0E\bf\x03\t\x03\t\x05\tk\n\t\x03\t\x05\tn\n\t\x03\t\x05\tq\n\t" +
+		"\x03\n\x03\n\x05\nu\n\n\x03\n\x03\n\x05\ny\n\n\x03\n\x05\n|\n\n\x03\n" +
+		"\x03\n\x03\n\x05\n\x81\n\n\x05\n\x83\n\n\x03\v\x03\v\x03\v\x03\v\x05\v" +
+		"\x89\n\v\x03\f\x03\f\x05\f\x8D\n\f\x03\f\x05\f\x90\n\f\x03\f\x03\f\x03" +
+		"\f\x05\f\x95\n\f\x03\f\x05\f\x98\n\f\x03\f\x05\f\x9B\n\f\x03\r\x03\r\x05" +
+		"\r\x9F\n\r\x03\r\x05\r\xA2\n\r\x03\r\x05\r\xA5\n\r\x03\r\x05\r\xA8\n\r" +
+		"\x03\r\x05\r\xAB\n\r\x03\x0E\x03\x0E\x05\x0E\xAF\n\x0E\x03\x0E\x03\x0E" +
+		"\x03\x0E\x03\x0E\x03\x0E\x05\x0E\xB6\n\x0E\x05\x0E\xB8\n\x0E\x03\x0F\x03" +
+		"\x0F\x03\x0F\x03\x0F\x03\x0F\x03\x0F\x05\x0F\xC0\n\x0F\x03\x10\x03\x10" +
+		"\x05\x10\xC4\n\x10\x03\x10\x05\x10\xC7\n\x10\x03\x10\x03\x10\x03\x11\x03" +
 		"\x11\x05\x11\xCD\n\x11\x03\x11\x03\x11\x05\x11\xD1\n\x11\x03\x11\x03\x11" +
 		"\x03\x11\x03\x11\x03\x12\x06\x12\xD8\n\x12\r\x12\x0E\x12\xD9\x03\x13\x03" +
 		"\x13\x03\x14\x03\x14\x03\x15\x03\x15\x03\x16\x03\x16\x03\x16\x02\x02\x02" +
 		"\x17\x02\x02\x04\x02\x06\x02\b\x02\n\x02\f\x02\x0E\x02\x10\x02\x12\x02" +
 		"\x14\x02\x16\x02\x18\x02\x1A\x02\x1C\x02\x1E\x02 \x02\"\x02$\x02&\x02" +
-		"(\x02*\x02\x02\n\x04\x02\x03\x04..\x04\x02\x14\x14%%\x04\x02\x03\x03\x05" +
-		"\x05\x04\x02\x03\x04\x06\x06\x03\x02\x1C\x1E\x04\x02\x04\x04\r\r\x03\x02" +
-		"\"#\x03\x02\t\n\x02\xFC\x027\x03\x02\x02\x02\x04D\x03\x02\x02\x02\x06" +
-		"F\x03\x02\x02\x02\bO\x03\x02\x02\x02\nR\x03\x02\x02\x02\fc\x03\x02\x02" +
-		"\x02\x0Ef\x03\x02\x02\x02\x10j\x03\x02\x02\x02\x12\x84\x03\x02\x02\x02" +
-		"\x14\x86\x03\x02\x02\x02\x16\x9C\x03\x02\x02\x02\x18\x9E\x03\x02\x02\x02" +
-		"\x1A\xB4\x03\x02\x02\x02\x1C\xBC\x03\x02\x02\x02\x1E\xC8\x03\x02\x02\x02" +
-		" \xCA\x03\x02\x02\x02\"\xD7\x03\x02\x02\x02$\xDB\x03\x02\x02\x02&\xDD" +
-		"\x03\x02\x02\x02(\xDF\x03\x02\x02\x02*\xE1\x03\x02\x02\x02,8\x05\x04\x03" +
-		"\x02-8\x05\f\x07\x02.8\x05\x10\t\x02/8\x05\x12\n\x0208\x05\x14\v\x021" +
-		"8\x05\x16\f\x0228\x05\x18\r\x0238\x05\x1A\x0E\x0248\x05\x1C\x0F\x0258" +
-		"\x05\x1E\x10\x0268\x05 \x11\x027,\x03\x02\x02\x027-\x03\x02\x02\x027." +
-		"\x03\x02\x02\x027/\x03\x02\x02\x0270\x03\x02\x02\x0271\x03\x02\x02\x02" +
-		"72\x03\x02\x02\x0273\x03\x02\x02\x0274\x03\x02\x02\x0275\x03\x02\x02\x02" +
-		"76\x03\x02\x02\x028\x03\x03\x02\x02\x029;\t\x02\x02\x02:<\x07\x1C\x02" +
-		"\x02;:\x03\x02\x02\x02;<\x03\x02\x02\x02<>\x03\x02\x02\x02=?\x07\x13\x02" +
-		"\x02>=\x03\x02\x02\x02>?\x03\x02\x02\x02?@\x03\x02\x02\x02@E\x05\x06\x04" +
-		"\x02AB\x07\v\x02\x02BC\x07\x13\x02\x02CE\x05\x06\x04\x02D9\x03\x02\x02" +
-		"\x02DA\x03\x02\x02\x02E\x05\x03\x02\x02\x02FL\x05\n\x06\x02GH\x05\b\x05" +
-		"\x02HI\x05\n\x06\x02IK\x03\x02\x02\x02JG\x03\x02\x02\x02KN\x03\x02\x02" +
-		"\x02LJ\x03\x02\x02\x02LM\x03\x02\x02\x02M\x07\x03\x02\x02\x02NL\x03\x02" +
-		"\x02\x02OP\t\x03\x02\x02P\t\x03\x02\x02\x02QS\x07,\x02\x02RQ\x03\x02\x02" +
-		"\x02ST\x03\x02\x02\x02TR\x03\x02\x02\x02TU\x03\x02\x02\x02U\v\x03\x02" +
-		"\x02\x02VX\x07\x04\x02\x02WY\x07\x15\x02\x02XW\x03\x02\x02\x02XY\x03\x02" +
-		"\x02\x02YZ\x03\x02\x02\x02Z\\\x05\x0E\b\x02[]\x07\x1B\x02\x02\\[\x03\x02" +
-		"\x02\x02\\]\x03\x02\x02\x02]d\x03\x02\x02\x02^_\t\x04\x02\x02_a\x05\x0E" +
-		"\b\x02`b\x07\x1B\x02\x02a`\x03\x02\x02\x02ab\x03\x02\x02\x02bd\x03\x02" +
-		"\x02\x02cV\x03\x02\x02\x02c^\x03\x02\x02\x02d\r\x03\x02\x02\x02eg\x07" +
-		",\x02\x02fe\x03\x02\x02\x02gh\x03\x02\x02\x02hf\x03\x02\x02\x02hi\x03" +
-		"\x02\x02\x02i\x0F\x03\x02\x02\x02jl\t\x05\x02\x02km\x05&\x14\x02lk\x03" +
-		"\x02\x02\x02lm\x03\x02\x02\x02mo\x03\x02\x02\x02np\x05(\x15\x02on\x03" +
-		"\x02\x02\x02op\x03\x02\x02\x02pr\x03\x02\x02\x02qs\t\x06\x02\x02rq\x03" +
-		"\x02\x02\x02rs\x03\x02\x02\x02s\x11\x03\x02\x02\x02tv\t\x07\x02\x02uw" +
-		"\x07\x16\x02\x02vu\x03\x02\x02\x02vw\x03\x02\x02\x02wx\x03\x02\x02\x02" +
-		"xz\x07(\x02\x02y{\x07\x0E\x02\x02zy\x03\x02\x02\x02z{\x03\x02\x02\x02" +
-		"{}\x03\x02\x02\x02|~\x05*\x16\x02}|\x03\x02\x02\x02}~\x03\x02\x02\x02" +
-		"~\x85\x03\x02\x02\x02\x7F\x80\x07\f\x02\x02\x80\x82\x07\x11\x02\x02\x81" +
-		"\x83\x05*\x16\x02\x82\x81\x03\x02\x02\x02\x82\x83\x03\x02\x02\x02\x83" +
-		"\x85\x03\x02\x02\x02\x84t\x03\x02\x02\x02\x84\x7F\x03\x02\x02\x02\x85" +
-		"\x13\x03\x02\x02\x02\x86\x87\x07\f\x02\x02\x87\x88\x07(\x02\x02\x88\x8A" +
-		"\x07\x11\x02\x02\x89\x8B\x05*\x16\x02\x8A\x89\x03\x02\x02\x02\x8A\x8B" +
-		"\x03\x02\x02\x02\x8B\x15\x03\x02\x02\x02\x8C\x8E\x07\x06\x02\x02\x8D\x8F" +
-		"\x07\x17\x02\x02\x8E\x8D\x03\x02\x02\x02\x8E\x8F\x03\x02\x02\x02\x8F\x91" +
-		"\x03\x02\x02\x02\x90\x92\x05&\x14\x02\x91\x90\x03\x02\x02\x02\x91\x92" +
-		"\x03\x02\x02\x02\x92\x93\x03\x02\x02\x02\x93\x9D\x05(\x15\x02\x94\x96" +
-		"\x07\x07\x02\x02\x95\x97\x07\x17\x02\x02\x96\x95\x03\x02\x02\x02\x96\x97" +
-		"\x03\x02\x02\x02\x97\x99\x03\x02\x02\x02\x98\x9A\x05&\x14\x02\x99\x98" +
-		"\x03\x02\x02\x02\x99\x9A\x03\x02\x02\x02\x9A\x9B\x03\x02\x02\x02\x9B\x9D" +
-		"\x05(\x15\x02\x9C\x8C\x03\x02\x02\x02\x9C\x94\x03\x02\x02\x02\x9D\x17" +
-		"\x03\x02\x02\x02\x9E\xA0\x07\b\x02\x02\x9F\xA1\x07\x16\x02\x02\xA0\x9F" +
-		"\x03\x02\x02\x02\xA0\xA1\x03\x02\x02\x02\xA1\xA2\x03\x02\x02\x02\xA2\xA4" +
-		"\t\b\x02\x02\xA3\xA5\x07\x1A\x02\x02\xA4\xA3\x03\x02\x02\x02\xA4\xA5\x03" +
-		"\x02\x02\x02\xA5\xA7\x03\x02\x02\x02\xA6\xA8\x05*\x16\x02\xA7\xA6\x03" +
-		"\x02\x02\x02\xA7\xA8\x03\x02\x02\x02\xA8\x19\x03\x02\x02\x02\xA9\xAB\x07" +
-		"\x12\x02\x02\xAA\xAC\x07\x16\x02\x02\xAB\xAA\x03\x02\x02\x02\xAB\xAC\x03" +
-		"\x02\x02\x02\xAC\xAD\x03\x02\x02\x02\xAD\xAE\x07\x1F\x02\x02\xAE\xB5\x07" +
-		" \x02\x02\xAF\xB2\x07\x0F\x02\x02\xB0\xB3\x07 \x02\x02\xB1\xB3\x05&\x14" +
-		"\x02\xB2\xB0\x03\x02\x02\x02\xB2\xB1\x03\x02\x02\x02\xB3\xB5\x03\x02\x02" +
-		"\x02\xB4\xA9\x03\x02\x02\x02\xB4\xAF\x03\x02\x02\x02\xB5\x1B\x03\x02\x02" +
-		"\x02\xB6\xB7\x07\x0F\x02\x02\xB7\xB8\x07!\x02\x02\xB8\xBD\x07(\x02\x02" +
-		"\xB9\xBA\x07\x10\x02\x02\xBA\xBB\x07!\x02\x02\xBB\xBD\x07(\x02\x02\xBC" +
-		"\xB6\x03\x02\x02\x02\xBC\xB9\x03\x02\x02\x02\xBD\x1D\x03\x02\x02\x02\xBE" +
-		"\xBF\x07\t\x02\x02\xBF\xC0\x07\x18\x02\x02\xC0\xC1\x07\x19\x02\x02\xC1" +
-		"\xC9\x05(\x15\x02\xC2\xC3\x07\n\x02\x02\xC3\xC5\x07\x18\x02\x02\xC4\xC6" +
-		"\x07\x1A\x02\x02\xC5\xC4\x03\x02\x02\x02\xC5\xC6\x03\x02\x02\x02\xC6\xC7" +
-		"\x03\x02\x02\x02\xC7\xC9\x05(\x15\x02\xC8\xBE\x03\x02\x02\x02\xC8\xC2" +
-		"\x03\x02\x02\x02\xC9\x1F\x03\x02\x02\x02\xCA\xCC\t\t\x02\x02\xCB\xCD\x07" +
-		"\x19\x02\x02\xCC\xCB\x03\x02\x02\x02\xCC\xCD\x03\x02\x02\x02\xCD\xCE\x03" +
-		"\x02\x02\x02\xCE\xD0\x05(\x15\x02\xCF\xD1\x07$\x02\x02\xD0\xCF\x03\x02" +
-		"\x02\x02\xD0\xD1\x03\x02\x02\x02\xD1\xD2\x03\x02\x02\x02\xD2\xD3\x05\"" +
-		"\x12\x02\xD3\xD4\x05$\x13\x02\xD4\xD5\x07*\x02\x02\xD5!\x03\x02\x02\x02" +
-		"\xD6\xD8\x07,\x02\x02\xD7\xD6\x03\x02\x02\x02\xD8\xD9\x03\x02\x02\x02" +
-		"\xD9\xD7\x03\x02\x02\x02\xD9\xDA\x03\x02\x02\x02\xDA#\x03\x02\x02\x02" +
-		"\xDB\xDC\x07+\x02\x02\xDC%\x03\x02\x02\x02\xDD\xDE\x07\'\x02\x02\xDE\'" +
-		"\x03\x02\x02\x02\xDF\xE0\x07&\x02\x02\xE0)\x03\x02\x02\x02\xE1\xE2\x07" +
-		")\x02\x02\xE2+\x03\x02\x02\x02\'7;>DLTX\\achlorvz}\x82\x84\x8A\x8E\x91" +
-		"\x96\x99\x9C\xA0\xA4\xA7\xAB\xB2\xB4\xBC\xC5\xC8\xCC\xD0\xD9";
+		"(\x02*\x02\x02\x0E\x04\x02\x03\x0422\x04\x02\x14\x14))\x04\x02\x03\x03" +
+		"\x05\x05\x04\x02\x03\x04\x06\x06\x03\x02\x1C\x1E\x04\x02\x04\x04\r\r\x04" +
+		"\x02\b\b$&\x03\x02\x16\x17\x03\x02\"#\x04\x02\t\n\'\'\x03\x02\x19\x1A" +
+		"\x03\x02\t\n\x02\xFD\x027\x03\x02\x02\x02\x04B\x03\x02\x02\x02\x06D\x03" +
+		"\x02\x02\x02\bM\x03\x02\x02\x02\nP\x03\x02\x02\x02\fa\x03\x02\x02\x02" +
+		"\x0Ed\x03\x02\x02\x02\x10h\x03\x02\x02\x02\x12\x82\x03\x02\x02\x02\x14" +
+		"\x84\x03\x02\x02\x02\x16\x9A\x03\x02\x02\x02\x18\x9C\x03\x02\x02\x02\x1A" +
+		"\xB7\x03\x02\x02\x02\x1C\xBF\x03\x02\x02\x02\x1E\xC1\x03\x02\x02\x02 " +
+		"\xCA\x03\x02\x02\x02\"\xD7\x03\x02\x02\x02$\xDB\x03\x02\x02\x02&\xDD\x03" +
+		"\x02\x02\x02(\xDF\x03\x02\x02\x02*\xE1\x03\x02\x02\x02,8\x05\x10\t\x02" +
+		"-8\x05\x04\x03\x02.8\x05\f\x07\x02/8\x05\x12\n\x0208\x05\x14\v\x0218\x05" +
+		"\x16\f\x0228\x05\x18\r\x0238\x05\x1A\x0E\x0248\x05\x1C\x0F\x0258\x05\x1E" +
+		"\x10\x0268\x05 \x11\x027,\x03\x02\x02\x027-\x03\x02\x02\x027.\x03\x02" +
+		"\x02\x027/\x03\x02\x02\x0270\x03\x02\x02\x0271\x03\x02\x02\x0272\x03\x02" +
+		"\x02\x0273\x03\x02\x02\x0274\x03\x02\x02\x0275\x03\x02\x02\x0276\x03\x02" +
+		"\x02\x028\x03\x03\x02\x02\x029;\t\x02\x02\x02:<\x07\x1C\x02\x02;:\x03" +
+		"\x02\x02\x02;<\x03\x02\x02\x02<=\x03\x02\x02\x02=>\x07\x13\x02\x02>C\x05" +
+		"\x06\x04\x02?@\x07\v\x02\x02@A\x07\x13\x02\x02AC\x05\x06\x04\x02B9\x03" +
+		"\x02\x02\x02B?\x03\x02\x02\x02C\x05\x03\x02\x02\x02DJ\x05\n\x06\x02EF" +
+		"\x05\b\x05\x02FG\x05\n\x06\x02GI\x03\x02\x02\x02HE\x03\x02\x02\x02IL\x03" +
+		"\x02\x02\x02JH\x03\x02\x02\x02JK\x03\x02\x02\x02K\x07\x03\x02\x02\x02" +
+		"LJ\x03\x02\x02\x02MN\t\x03\x02\x02N\t\x03\x02\x02\x02OQ\x070\x02\x02P" +
+		"O\x03\x02\x02\x02QR\x03\x02\x02\x02RP\x03\x02\x02\x02RS\x03\x02\x02\x02" +
+		"S\v\x03\x02\x02\x02TV\x07\x04\x02\x02UW\x07\x15\x02\x02VU\x03\x02\x02" +
+		"\x02VW\x03\x02\x02\x02WX\x03\x02\x02\x02XZ\x05\x0E\b\x02Y[\x07\x1B\x02" +
+		"\x02ZY\x03\x02\x02\x02Z[\x03\x02\x02\x02[b\x03\x02\x02\x02\\]\t\x04\x02" +
+		"\x02]_\x05\x0E\b\x02^`\x07\x1B\x02\x02_^\x03\x02\x02\x02_`\x03\x02\x02" +
+		"\x02`b\x03\x02\x02\x02aT\x03\x02\x02\x02a\\\x03\x02\x02\x02b\r\x03\x02" +
+		"\x02\x02ce\x070\x02\x02dc\x03\x02\x02\x02ef\x03\x02\x02\x02fd\x03\x02" +
+		"\x02\x02fg\x03\x02\x02\x02g\x0F\x03\x02\x02\x02hj\t\x05\x02\x02ik\x05" +
+		"&\x14\x02ji\x03\x02\x02\x02jk\x03\x02\x02\x02km\x03\x02\x02\x02ln\x05" +
+		"(\x15\x02ml\x03\x02\x02\x02mn\x03\x02\x02\x02np\x03\x02\x02\x02oq\t\x06" +
+		"\x02\x02po\x03\x02\x02\x02pq\x03\x02\x02\x02q\x11\x03\x02\x02\x02rt\t" +
+		"\x07\x02\x02su\x07\x16\x02\x02ts\x03\x02\x02\x02tu\x03\x02\x02\x02uv\x03" +
+		"\x02\x02\x02vx\x07,\x02\x02wy\x07\x0E\x02\x02xw\x03\x02\x02\x02xy\x03" +
+		"\x02\x02\x02y{\x03\x02\x02\x02z|\x05*\x16\x02{z\x03\x02\x02\x02{|\x03" +
+		"\x02\x02\x02|\x83\x03\x02\x02\x02}~\x07\f\x02\x02~\x80\x07\x11\x02\x02" +
+		"\x7F\x81\x05*\x16\x02\x80\x7F\x03\x02\x02\x02\x80\x81\x03\x02\x02\x02" +
+		"\x81\x83\x03\x02\x02\x02\x82r\x03\x02\x02\x02\x82}\x03\x02\x02\x02\x83" +
+		"\x13\x03\x02\x02\x02\x84\x85\x07\f\x02\x02\x85\x86\x07,\x02\x02\x86\x88" +
+		"\x07\x11\x02\x02\x87\x89\x05*\x16\x02\x88\x87\x03\x02\x02\x02\x88\x89" +
+		"\x03\x02\x02\x02\x89\x15\x03\x02\x02\x02\x8A\x8C\x07\x06\x02\x02\x8B\x8D" +
+		"\x07\x17\x02\x02\x8C\x8B\x03\x02\x02\x02\x8C\x8D\x03\x02\x02\x02\x8D\x8F" +
+		"\x03\x02\x02\x02\x8E\x90\x05&\x14\x02\x8F\x8E\x03\x02\x02\x02\x8F\x90" +
+		"\x03\x02\x02\x02\x90\x91\x03\x02\x02\x02\x91\x9B\x05(\x15\x02\x92\x94" +
+		"\x07\x07\x02\x02\x93\x95\x07\x17\x02\x02\x94\x93\x03\x02\x02\x02\x94\x95" +
+		"\x03\x02\x02\x02\x95\x97\x03\x02\x02\x02\x96\x98\x05&\x14\x02\x97\x96" +
+		"\x03\x02\x02\x02\x97\x98\x03\x02\x02\x02\x98\x99\x03\x02\x02\x02\x99\x9B" +
+		"\x05(\x15\x02\x9A\x8A\x03\x02\x02\x02\x9A\x92\x03\x02\x02\x02\x9B\x17" +
+		"\x03\x02\x02\x02\x9C\x9E\t\b\x02\x02\x9D\x9F\t\t\x02\x02\x9E\x9D\x03\x02" +
+		"\x02\x02\x9E\x9F\x03\x02\x02\x02\x9F\xA1\x03\x02\x02\x02\xA0\xA2\t\n\x02" +
+		"\x02\xA1\xA0\x03\x02\x02\x02\xA1\xA2\x03\x02\x02\x02\xA2\xA4\x03\x02\x02" +
+		"\x02\xA3\xA5\x07\b\x02\x02\xA4\xA3\x03\x02\x02\x02\xA4\xA5\x03\x02\x02" +
+		"\x02\xA5\xA7\x03\x02\x02\x02\xA6\xA8\x07\x1A\x02\x02\xA7\xA6\x03\x02\x02" +
+		"\x02\xA7\xA8\x03\x02\x02\x02\xA8\xAA\x03\x02\x02\x02\xA9\xAB\x05*\x16" +
+		"\x02\xAA\xA9\x03\x02\x02\x02\xAA\xAB\x03\x02\x02\x02\xAB\x19\x03\x02\x02" +
+		"\x02\xAC\xAE\x07\x12\x02\x02\xAD\xAF\x07\x16\x02\x02\xAE\xAD\x03\x02\x02" +
+		"\x02\xAE\xAF\x03\x02\x02\x02\xAF\xB0\x03\x02\x02\x02\xB0\xB1\x07\x1F\x02" +
+		"\x02\xB1\xB8\x07 \x02\x02\xB2\xB5\x07\x0F\x02\x02\xB3\xB6\x07 \x02\x02" +
+		"\xB4\xB6\x05&\x14\x02\xB5\xB3\x03\x02\x02\x02\xB5\xB4\x03\x02\x02\x02" +
+		"\xB6\xB8\x03\x02\x02\x02\xB7\xAC\x03\x02\x02\x02\xB7\xB2\x03\x02\x02\x02" +
+		"\xB8\x1B\x03\x02\x02\x02\xB9\xBA\x07\x0F\x02\x02\xBA\xBB\x07!\x02\x02" +
+		"\xBB\xC0\x07,\x02\x02\xBC\xBD\x07\x10\x02\x02\xBD\xBE\x07!\x02\x02\xBE" +
+		"\xC0\x07,\x02\x02\xBF\xB9\x03\x02\x02\x02\xBF\xBC\x03\x02\x02\x02\xC0" +
+		"\x1D\x03\x02\x02\x02\xC1\xC3\t\v\x02\x02\xC2\xC4\x07\x18\x02\x02\xC3\xC2" +
+		"\x03\x02\x02\x02\xC3\xC4\x03\x02\x02\x02\xC4\xC6\x03\x02\x02\x02\xC5\xC7" +
+		"\t\f\x02\x02\xC6\xC5\x03\x02\x02\x02\xC6\xC7\x03\x02\x02\x02\xC7\xC8\x03" +
+		"\x02\x02\x02\xC8\xC9\x05(\x15\x02\xC9\x1F\x03\x02\x02\x02\xCA\xCC\t\r" +
+		"\x02\x02\xCB\xCD\x07\x19\x02\x02\xCC\xCB\x03\x02\x02\x02\xCC\xCD\x03\x02" +
+		"\x02\x02\xCD\xCE\x03\x02\x02\x02\xCE\xD0\x05(\x15\x02\xCF\xD1\x07(\x02" +
+		"\x02\xD0\xCF\x03\x02\x02\x02\xD0\xD1\x03\x02\x02\x02\xD1\xD2\x03\x02\x02" +
+		"\x02\xD2\xD3\x05\"\x12\x02\xD3\xD4\x05$\x13\x02\xD4\xD5\x07.\x02\x02\xD5" +
+		"!\x03\x02\x02\x02\xD6\xD8\x070\x02\x02\xD7\xD6\x03\x02\x02\x02\xD8\xD9" +
+		"\x03\x02\x02\x02\xD9\xD7\x03\x02\x02\x02\xD9\xDA\x03\x02\x02\x02\xDA#" +
+		"\x03\x02\x02\x02\xDB\xDC\x07/\x02\x02\xDC%\x03\x02\x02\x02\xDD\xDE\x07" +
+		"+\x02\x02\xDE\'\x03\x02\x02\x02\xDF\xE0\x07*\x02\x02\xE0)\x03\x02\x02" +
+		"\x02\xE1\xE2\x07-\x02\x02\xE2+\x03\x02\x02\x02(7;BJRVZ_afjmptx{\x80\x82" +
+		"\x88\x8C\x8F\x94\x97\x9A\x9E\xA1\xA4\xA7\xAA\xAE\xB5\xB7\xBF\xC3\xC6\xCC" +
+		"\xD0\xD9";
 	public static __ATN: ATN;
 	public static get _ATN(): ATN {
 		if (!ChatbotCommandsParser.__ATN) {
@@ -1458,6 +1503,35 @@ export class CommandContext extends ParserRuleContext {
 	public get ruleIndex(): number { return ChatbotCommandsParser.RULE_command; }
 	public copyFrom(ctx: CommandContext): void {
 		super.copyFrom(ctx);
+	}
+}
+export class CmdSearchCategoryContext extends CommandContext {
+	public searchByCategory(): SearchByCategoryContext {
+		return this.getRuleContext(0, SearchByCategoryContext);
+	}
+	constructor(ctx: CommandContext) {
+		super(ctx.parent, ctx.invokingState);
+		this.copyFrom(ctx);
+	}
+	// @Override
+	public enterRule(listener: ChatbotCommandsListener): void {
+		if (listener.enterCmdSearchCategory) {
+			listener.enterCmdSearchCategory(this);
+		}
+	}
+	// @Override
+	public exitRule(listener: ChatbotCommandsListener): void {
+		if (listener.exitCmdSearchCategory) {
+			listener.exitCmdSearchCategory(this);
+		}
+	}
+	// @Override
+	public accept<Result>(visitor: ChatbotCommandsVisitor<Result>): Result {
+		if (visitor.visitCmdSearchCategory) {
+			return visitor.visitCmdSearchCategory(this);
+		} else {
+			return visitor.visitChildren(this);
+		}
 	}
 }
 export class CmdSearchIngredientsContext extends CommandContext {
@@ -1513,35 +1587,6 @@ export class CmdSearchNameContext extends CommandContext {
 	public accept<Result>(visitor: ChatbotCommandsVisitor<Result>): Result {
 		if (visitor.visitCmdSearchName) {
 			return visitor.visitCmdSearchName(this);
-		} else {
-			return visitor.visitChildren(this);
-		}
-	}
-}
-export class CmdSearchCategoryContext extends CommandContext {
-	public searchByCategory(): SearchByCategoryContext {
-		return this.getRuleContext(0, SearchByCategoryContext);
-	}
-	constructor(ctx: CommandContext) {
-		super(ctx.parent, ctx.invokingState);
-		this.copyFrom(ctx);
-	}
-	// @Override
-	public enterRule(listener: ChatbotCommandsListener): void {
-		if (listener.enterCmdSearchCategory) {
-			listener.enterCmdSearchCategory(this);
-		}
-	}
-	// @Override
-	public exitRule(listener: ChatbotCommandsListener): void {
-		if (listener.exitCmdSearchCategory) {
-			listener.exitCmdSearchCategory(this);
-		}
-	}
-	// @Override
-	public accept<Result>(visitor: ChatbotCommandsVisitor<Result>): Result {
-		if (visitor.visitCmdSearchCategory) {
-			return visitor.visitCmdSearchCategory(this);
 		} else {
 			return visitor.visitChildren(this);
 		}
@@ -1782,6 +1827,7 @@ export class CmdLogMealCustomContext extends CommandContext {
 
 
 export class SearchByIngredientsContext extends ParserRuleContext {
+	public WITH(): TerminalNode { return this.getToken(ChatbotCommandsParser.WITH, 0); }
 	public ingredientList(): IngredientListContext {
 		return this.getRuleContext(0, IngredientListContext);
 	}
@@ -1789,7 +1835,6 @@ export class SearchByIngredientsContext extends ParserRuleContext {
 	public SHOW(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.SHOW, 0); }
 	public SEARCH(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.SEARCH, 0); }
 	public RECIPES(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.RECIPES, 0); }
-	public WITH(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.WITH, 0); }
 	public WHAT_CAN_I_COOK(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.WHAT_CAN_I_COOK, 0); }
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);
@@ -2164,14 +2209,26 @@ export class MealSuggestionContext extends ParserRuleContext {
 
 
 export class MealPlanContext extends ParserRuleContext {
-	public PLAN(): TerminalNode { return this.getToken(ChatbotCommandsParser.PLAN, 0); }
-	public MEAL(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.MEAL, 0); }
-	public MEALS(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.MEALS, 0); }
-	public MY(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.MY, 0); }
+	public PLAN(): TerminalNode[];
+	public PLAN(i: number): TerminalNode;
+	public PLAN(i?: number): TerminalNode | TerminalNode[] {
+		if (i === undefined) {
+			return this.getTokens(ChatbotCommandsParser.PLAN);
+		} else {
+			return this.getToken(ChatbotCommandsParser.PLAN, i);
+		}
+	}
+	public CREATE(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.CREATE, 0); }
+	public MAKE(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.MAKE, 0); }
+	public GENERATE(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.GENERATE, 0); }
 	public FOR(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.FOR, 0); }
 	public timeRange(): TimeRangeContext | undefined {
 		return this.tryGetRuleContext(0, TimeRangeContext);
 	}
+	public MY(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.MY, 0); }
+	public A(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.A, 0); }
+	public MEAL(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.MEAL, 0); }
+	public MEALS(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.MEALS, 0); }
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);
 	}
@@ -2271,13 +2328,14 @@ export class NutrientCheckContext extends ParserRuleContext {
 
 
 export class LogMealContextContext extends ParserRuleContext {
-	public ADD(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.ADD, 0); }
-	public THIS(): TerminalNode { return this.getToken(ChatbotCommandsParser.THIS, 0); }
-	public TO(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.TO, 0); }
 	public mealTime(): MealTimeContext {
 		return this.getRuleContext(0, MealTimeContext);
 	}
+	public ADD(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.ADD, 0); }
 	public LOG(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.LOG, 0); }
+	public SAVE(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.SAVE, 0); }
+	public THIS(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.THIS, 0); }
+	public TO(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.TO, 0); }
 	public FOR(): TerminalNode | undefined { return this.tryGetToken(ChatbotCommandsParser.FOR, 0); }
 	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
 		super(parent, invokingState);

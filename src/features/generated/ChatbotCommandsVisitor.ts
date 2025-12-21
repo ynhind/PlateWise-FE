@@ -3,9 +3,9 @@
 
 import { ParseTreeVisitor } from "antlr4ts/tree/ParseTreeVisitor";
 
+import { CmdSearchCategoryContext } from "./ChatbotCommandsParser";
 import { CmdSearchIngredientsContext } from "./ChatbotCommandsParser";
 import { CmdSearchNameContext } from "./ChatbotCommandsParser";
-import { CmdSearchCategoryContext } from "./ChatbotCommandsParser";
 import { CmdNutritionQueryContext } from "./ChatbotCommandsParser";
 import { CmdNutritionDetailContext } from "./ChatbotCommandsParser";
 import { CmdMealSuggestionContext } from "./ChatbotCommandsParser";
@@ -46,6 +46,14 @@ import { TimeRangeContext } from "./ChatbotCommandsParser";
  */
 export interface ChatbotCommandsVisitor<Result> extends ParseTreeVisitor<Result> {
 	/**
+	 * Visit a parse tree produced by the `CmdSearchCategory`
+	 * labeled alternative in `ChatbotCommandsParser.command`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitCmdSearchCategory?: (ctx: CmdSearchCategoryContext) => Result;
+
+	/**
 	 * Visit a parse tree produced by the `CmdSearchIngredients`
 	 * labeled alternative in `ChatbotCommandsParser.command`.
 	 * @param ctx the parse tree
@@ -60,14 +68,6 @@ export interface ChatbotCommandsVisitor<Result> extends ParseTreeVisitor<Result>
 	 * @return the visitor result
 	 */
 	visitCmdSearchName?: (ctx: CmdSearchNameContext) => Result;
-
-	/**
-	 * Visit a parse tree produced by the `CmdSearchCategory`
-	 * labeled alternative in `ChatbotCommandsParser.command`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitCmdSearchCategory?: (ctx: CmdSearchCategoryContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by the `CmdNutritionQuery`

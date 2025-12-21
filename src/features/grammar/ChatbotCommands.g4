@@ -2,8 +2,8 @@ grammar ChatbotCommands;
 
 //PARSER RULES
 command
-    | searchByCategory         # CmdSearchCategory
-    : searchByIngredients      # CmdSearchIngredients
+    : searchByCategory         # CmdSearchCategory
+    | searchByIngredients      # CmdSearchIngredients
     | searchByName             # CmdSearchName
     | nutritionQuery           # CmdNutritionQuery
     | nutritionDetail          # CmdNutritionDetail
@@ -43,7 +43,7 @@ nutritionDetail: HOW_MUCH NUTRIENT DID_I_EAT timeRange? ;
 mealSuggestion: SUGGEST A? category? mealTime | RECOMMEND A? category? mealTime;
 
 //Plan: "plan my meal for today"
-mealPlan: PLAN (MY)? (MEAL | MEALS) (FOR)? timeRange? ;
+mealPlan: (PLAN | CREATE | MAKE | GENERATE) (MY | A)? (MEAL | MEALS)? (PLAN)? (FOR)? timeRange? ;
 
 //Checks: "is my diet balanced"
 dietCheck: IS (MY)? DIET BALANCED | AM_I_EATING (BALANCED | category);
@@ -52,7 +52,7 @@ dietCheck: IS (MY)? DIET BALANCED | AM_I_EATING (BALANCED | category);
 nutrientCheck: AM_I_EATING ENOUGH NUTRIENT | DO_I_HAVE ENOUGH NUTRIENT;
 
 //Log (Context): "add this to lunch"
-logMealContext: ADD THIS TO mealTime | LOG THIS FOR? mealTime;
+logMealContext: (ADD | LOG | SAVE) (THIS)? (TO | FOR)? mealTime ;
 
 //Log (Custom): "log breakfast: oatmeal 300 calories"
 // Pattern: LOG <meal> <food name> <number> <unit>
@@ -102,6 +102,10 @@ BALANCED: 'balanced';
 ENOUGH: 'enough';
 MEAL: 'meal';
 MEALS: 'meals';
+CREATE: 'create';
+MAKE: 'make';
+GENERATE: 'generate';
+SAVE: 'save';
 COLON: ':';
 COMMA: ',' ;
 

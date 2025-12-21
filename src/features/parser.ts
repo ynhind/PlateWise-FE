@@ -39,8 +39,10 @@ class CommandVisitor extends AbstractParseTreeVisitor<AST> implements ChatbotCom
 
     // 2. Search By Name
     visitCmdSearchName(ctx: CmdSearchNameContext): AST {
-        // FIX: Phải gọi qua searchByName()
-        const name = ctx.searchByName().recipeNamePhrase().text;
+        // ✅ MỚI (Đúng): Lấy mảng WORD và nối bằng dấu cách
+        const namePhrase = ctx.searchByName().recipeNamePhrase();
+        // Lưu ý: Nếu trong grammar bạn đặt tên là TEXT hay ID thì thay WORD() bằng cái đó
+        const name = namePhrase.WORD().map(node => node.text).join(" ");
         return {
             type: "RECIPE_SEARCH_BY_NAME",
             payload: { recipeName: name }
@@ -135,7 +137,9 @@ class CommandVisitor extends AbstractParseTreeVisitor<AST> implements ChatbotCom
     visitCmdLogMealCustom(ctx: CmdLogMealCustomContext): AST {
         const subCtx = ctx.logMealCustom();
         const mealType = subCtx.mealTime().text as MealType;
-        const foodName = subCtx.customFoodPhrase().text;
+        const foodPhrase = subCtx.customFoodPhrase();
+        const foodName = foodPhrase.WORD().map(w => w.text).join(" ");
+
         const calories = parseInt(subCtx.amount().text);
 
         return {
