@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/ynhind/PlateWise-FE#readme",
   "dependencies": {
+    "lucide-react": "^0.562.0",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-router-dom": "^7.11.0"
