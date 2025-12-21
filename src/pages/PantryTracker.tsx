@@ -3,6 +3,7 @@ import RecipeFinder from "../components/nutrition/RecipeFinder";
 import DailyTracker from "../components/nutrition/DailyTracker";
 import CalorieCalculator from "../components/nutrition/CalorieCalculator";
 import RecipeDetailModal from "../components/nutrition/RecipeDetailModal";
+import ChatboxPPL from "../components/common/ChatboxPPL";
 import { useRecipes } from "../hooks/useRecipes";
 import { useMealLogs } from "../hooks/useMealLogs";
 import { useUserProfile } from "../hooks/useUserProfile";
@@ -11,6 +12,7 @@ const PantryTracker = () => {
   const [activeTab, setActiveTab] = useState<
     "finder" | "tracker" | "calculator"
   >("finder");
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Custom hooks
   const {
@@ -97,13 +99,14 @@ const PantryTracker = () => {
               </div>
             </div>
 
-            {/* Chatbox Icon - Coming Soon */}
+            {/* Chatbox Icon - Active */}
             <button
-              className="p-3 bg-green-100 hover:bg-green-200 rounded-full transition-colors relative group"
-              title="AI Assistant (Coming Soon)"
+              onClick={() => setIsChatOpen(!isChatOpen)}
+              className="p-3 bg-gradient-to-br from-indigo-100 to-purple-100 hover:from-indigo-200 hover:to-purple-200 rounded-full transition-all relative group shadow-md hover:shadow-lg"
+              title="AI Assistant"
             >
               <svg
-                className="w-6 h-6 text-green-600"
+                className="w-6 h-6 text-indigo-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -115,9 +118,11 @@ const PantryTracker = () => {
                   d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
                 />
               </svg>
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full animate-pulse" />
+              {!isChatOpen && (
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full animate-pulse" />
+              )}
               <div className="absolute right-0 top-full mt-2 w-48 bg-gray-900 text-white text-xs rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                AI Nutrition Assistant - Coming Soon!
+                🤖 Ask me about recipes & nutrition!
               </div>
             </button>
           </div>
@@ -283,6 +288,28 @@ const PantryTracker = () => {
         showAddToMealModal={showAddToMealModal}
         setShowAddToMealModal={setShowAddToMealModal}
       />
+
+      {/* AI Chatbox */}
+      <ChatboxPPL isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+
+      {/* Floating Chat Button (Mobile/Always Visible) */}
+      {!isChatOpen && (
+        <button
+          onClick={() => setIsChatOpen(true)}
+          className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-full shadow-2xl hover:shadow-3xl hover:scale-110 transition-all z-40 flex items-center justify-center group"
+          aria-label="Open AI Assistant"
+        >
+          <span className="text-3xl">🤖</span>
+          <span className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-orange-500 to-pink-500 rounded-full animate-pulse" />
+
+          {/* Tooltip */}
+          <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap">
+              🤖 Ask me about recipes & nutrition!
+            </div>
+          </div>
+        </button>
+      )}
     </div>
   );
 };

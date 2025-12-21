@@ -8,18 +8,14 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      util: "util",
+      assert: "assert",
     },
   },
   server: {
     port: 5713,
   },
-  resolve: {
-    alias: {
-      util: "util",
-      assert: "assert",
-    },
-  },
   define: {
-    'process.env': {},
+    "process.env": {},
   },
 });
