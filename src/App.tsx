@@ -1,39 +1,47 @@
-import Navbar from "./components/common/Navbar";
-import Footer from "./components/common/Footer";
-import HeroSection from "./components/home/HeroSection";
-import FeaturesSection from "./components/home/FeaturesSection";
-import HowItWorksSection from "./components/home/HowItWorksSection";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { ChallengeProvider } from "./pages/ChallengeContext";
-import { ChallengesPage } from "./pages/ChallengesPage";
-
+import Navbar from './components/common/Navbar';
+import Footer from './components/common/Footer';
+import HeroSection from './components/home/HeroSection';
+import FeaturesSection from './components/home/FeaturesSection';
+import HowItWorksSection from './components/home/HowItWorksSection';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { ChallengeProvider } from './pages/ChallengeContext';
+import { ChallengesPage } from './pages/ChallengesPage';
+import CommunityPage from './pages/CommunityPage';
 
 function App() {
   return (
     <Router>
       <div className="App flex flex-col min-h-screen">
         <Navbar />
-        <div className="flex-grow pt-16"> 
+        <div className="flex-grow pt-16">
           <Routes>
-
-            <Route 
-              path="/" 
+            <Route
+              path="/"
               element={
                 <>
-                <HeroSection />
-                <FeaturesSection />
-                <HowItWorksSection />
+                  <HeroSection />
+                  <FeaturesSection />
+                  <HowItWorksSection />
                 </>
-              } 
+              }
             />
-            
-            <Route 
-              path="/challenges" 
+
+            <Route
+              path="/challenges"
               element={
                 <ChallengeProvider>
                   <ChallengesPage />
                 </ChallengeProvider>
-              } 
+              }
+            />
+
+            <Route
+              path="/community"
+              element={
+                <ChallengeProvider>
+                  <CommunityPage />
+                </ChallengeProvider>
+              }
             />
           </Routes>
         </div>
