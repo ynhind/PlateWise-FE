@@ -290,7 +290,12 @@ const PantryTracker = () => {
       />
 
       {/* AI Chatbox */}
-      <ChatboxPPL isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <ChatboxPPL
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        onRecipeClick={fetchRecipeDetails}
+        selectedRecipe={selectedRecipe}
+      />
 
       {/* Floating Chat Button (Mobile/Always Visible) */}
       {!isChatOpen && (

@@ -5,9 +5,16 @@ import { parse } from "@/features/parser";
 interface ChatboxPPLProps {
   isOpen: boolean;
   onClose: () => void;
+  onRecipeClick?: (recipeId: number) => void;
+  selectedRecipe?: any; // Current recipe from modal
 }
 
-const ChatboxPPL = ({ isOpen, onClose }: ChatboxPPLProps) => {
+const ChatboxPPL = ({
+  isOpen,
+  onClose,
+  onRecipeClick,
+  selectedRecipe,
+}: ChatboxPPLProps) => {
   const [inputValue, setInputValue] = useState("");
   const { messages, isProcessing, sendAST } = useChatbot();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -27,8 +34,8 @@ const ChatboxPPL = ({ isOpen, onClose }: ChatboxPPLProps) => {
       // Parse the input using Member A's Parser
       const ast = parse(userInput);
 
-      // Execute via Member B's Interpreter
-      await sendAST(ast);
+      // Execute via Member B's Interpreter with context
+      await sendAST(ast, { currentRecipe: selectedRecipe });
     } catch (error) {
       console.error("Error processing message:", error);
     }
@@ -42,11 +49,11 @@ const ChatboxPPL = ({ isOpen, onClose }: ChatboxPPLProps) => {
   };
 
   const exampleCommands = [
-    "🔍 find recipes with chicken and rice",
-    "📊 show my calories today",
-    "🍽️ suggest a low-calorie dinner",
-    "📝 log breakfast: oatmeal 300 calories",
-    "⚖️ is my diet balanced?",
+    "Find recipes with chicken and rice",
+    "Show my calories today",
+    "Suggest a low-calorie dinner",
+    "Log breakfast: oatmeal 300 calories",
+    "Is my diet balanced?",
   ];
 
   if (!isOpen) return null;
@@ -84,6 +91,19 @@ const ChatboxPPL = ({ isOpen, onClose }: ChatboxPPLProps) => {
           </svg>
         </button>
       </div>
+
+      {/* Selected Recipe Banner */}
+      {selectedRecipe && (
+        <div className="bg-green-50 border-b border-green-200 px-4 py-2 flex items-center gap-2">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-green-700 font-medium truncate">
+              📌 Selected: {selectedRecipe.title}
+            </p>
+          </div>
+          <p className="text-xs text-green-600">Ready to add</p>
+        </div>
+      )}
 
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-gray-50 to-white">
@@ -156,12 +176,19 @@ const ChatboxPPL = ({ isOpen, onClose }: ChatboxPPLProps) => {
                       {message.data.slice(0, 6).map((recipe: any) => (
                         <div
                           key={recipe.id}
-                          className="bg-white border border-gray-200 rounded-xl p-3 hover:shadow-md transition-shadow cursor-pointer"
+                          className="relative bg-white border border-gray-200 rounded-xl p-3 hover:shadow-md hover:border-green-300 transition-all cursor-pointer group"
                           onClick={() => {
-                            // TODO: Open recipe detail modal
-                            console.log("Recipe clicked:", recipe);
+                            if (onRecipeClick) {
+                              onRecipeClick(recipe.id);
+                            }
                           }}
                         >
+                          {/* Click indicator */}
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span className="text-xs text-green-600 font-semibold">
+                              View →
+                            </span>
+                          </div>
                           <div className="flex gap-3">
                             {/* Recipe Image */}
                             {recipe.image && (
