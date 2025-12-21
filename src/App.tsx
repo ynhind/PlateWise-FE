@@ -8,6 +8,13 @@ import { ChallengeProvider } from './pages/ChallengeContext';
 import { ChallengesPage } from './pages/ChallengesPage';
 import CommunityPage from './pages/CommunityPage';
 
+// ✅ NEW
+import SignInPage from './pages/SignInPage';
+import RegisterPage from './pages/RegisterPage';
+import OnboardingPage from './pages/OnboardingPage';
+import DashboardPage from './pages/DashboardPage';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
+
 function App() {
   return (
     <Router>
@@ -41,6 +48,28 @@ function App() {
                 <ChallengeProvider>
                   <CommunityPage />
                 </ChallengeProvider>
+              }
+            />
+
+            {/* ✅ AUTH FLOW */}
+            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+
+            <Route
+              path="/onboarding"
+              element={
+                <ProtectedRoute>
+                  <OnboardingPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
               }
             />
           </Routes>
