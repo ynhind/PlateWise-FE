@@ -157,10 +157,10 @@ const RecommendedSection: React.FC<RecommendedSectionProps> = ({
                 {hasUserHistory() ? "Curated for You" : "Trending Now"}
               </span>
             </div>
-            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               {hasUserHistory() ? "Recommended for You" : "Popular Recipes"}
             </h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-base text-gray-600">
               {hasUserHistory()
                 ? "Based on your taste and preferences"
                 : "Trending recipes you might love"}

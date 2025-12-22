@@ -298,6 +298,8 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
           onClick={() => {
             setSearchType("ingredients");
             setError(null);
+            setRecipes([]); // Clear recipes when switching tabs
+            setSearchQuery(""); // Clear recipe name search
           }}
           className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all ${
             searchType === "ingredients"
@@ -311,6 +313,9 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
           onClick={() => {
             setSearchType("recipe");
             setError(null);
+            setRecipes([]); // Clear recipes when switching tabs
+            setSelectedIngredients([]); // Clear selected ingredients
+            setCustomIngredientInput(""); // Clear custom input
           }}
           className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all ${
             searchType === "recipe"
@@ -347,15 +352,35 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
 
       {/* Selected Ingredients */}
       {searchType === "ingredients" && selectedIngredients.length > 0 && (
-        <div className="mb-6 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Selected Ingredients ({selectedIngredients.length})
-            </h2>
+        <div className="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border-2 border-green-200 p-5">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">
+                  {selectedIngredients.length}
+                </span>
+              </div>
+              <h3 className="text-sm font-semibold text-gray-700">
+                Selected Ingredients
+              </h3>
+            </div>
             <button
               onClick={clearAll}
-              className="text-sm text-red-500 hover:text-red-700 font-medium transition-colors"
+              className="text-xs text-red-600 hover:text-red-700 font-medium transition-colors flex items-center gap-1"
             >
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
               Clear All
             </button>
           </div>
@@ -363,15 +388,15 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
             {selectedIngredients.map((ingredient) => (
               <span
                 key={ingredient}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full font-medium"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-green-300 text-green-700 rounded-full text-sm font-medium shadow-sm"
               >
                 {ingredient}
                 <button
                   onClick={() => toggleIngredient(ingredient)}
-                  className="hover:bg-green-200 rounded-full p-1 transition-colors"
+                  className="hover:bg-green-100 rounded-full p-0.5 transition-colors"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="w-3.5 h-3.5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -387,20 +412,49 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
               </span>
             ))}
           </div>
-          <button
-            onClick={handleSearch}
-            disabled={isLoading}
-            className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? "Searching..." : "Find Recipes"}
-          </button>
+
+          {/* Compact Action Bar */}
+          <div className="flex items-center gap-3 pt-3 border-t border-green-200">
+            <button
+              onClick={handleSearch}
+              disabled={isLoading}
+              className="flex-1 py-2.5 bg-white border-2 border-green-500 text-green-700 font-semibold rounded-lg hover:bg-green-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+            >
+              {isLoading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
+                  <span>Searching...</span>
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                  <span>Find Recipes</span>
+                </>
+              )}
+            </button>
+            <div className="text-xs text-gray-600 font-medium">
+              {selectedIngredients.length} selected
+            </div>
+          </div>
         </div>
       )}
 
       {/* Custom Ingredient Input */}
       {searchType === "ingredients" && (
-        <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
+        <div className="mb-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-3">
             Add Custom Ingredient
           </h2>
           <div className="relative">
@@ -412,12 +466,12 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
               onKeyPress={handleCustomInputKeyPress}
               onFocus={() => setShowSuggestions(true)}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-              className="w-full px-6 py-4 pr-28 rounded-2xl border-2 border-gray-200 focus:border-green-500 focus:outline-none text-lg transition-colors"
+              className="w-full px-5 py-3.5 pr-24 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none transition-colors"
             />
             <button
               onClick={() => addCustomIngredient(customIngredientInput)}
               disabled={!customIngredientInput.trim()}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Add
             </button>
