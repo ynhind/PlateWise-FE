@@ -40,6 +40,25 @@ const RecipeDetailModal: React.FC<RecipeDetailModalProps> = ({
   showAddToMealModal,
   setShowAddToMealModal,
 }) => {
+  // Track recently viewed recipes
+  React.useEffect(() => {
+    if (isOpen && recipe) {
+      const viewedIds = localStorage.getItem("platewise_recently_viewed");
+      const ids: number[] = viewedIds ? JSON.parse(viewedIds) : [];
+
+      // Remove if already exists to move it to front
+      const filteredIds = ids.filter((id) => id !== recipe.id);
+
+      // Add to front and keep max 10 recipes
+      const updatedIds = [recipe.id, ...filteredIds].slice(0, 10);
+
+      localStorage.setItem(
+        "platewise_recently_viewed",
+        JSON.stringify(updatedIds)
+      );
+    }
+  }, [isOpen, recipe]);
+
   if (!isOpen) return null;
 
   return (

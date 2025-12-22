@@ -378,14 +378,13 @@ export function executeNutritionCommand(
     );
 
     const percentage = Math.round((totals.calories / dailyGoal.calories) * 100);
-    const progressBar = createProgressBar(percentage);
 
-    let message = `📊 **Nutrition Summary ${
+    let message = `📊 Nutrition Summary ${
       timeRange === "today" ? "Today" : timeRange || ""
-    }**\n\n`;
+    }\n\n`;
 
     if (metric === "calories" || !metric) {
-      message += `Calories: ${totals.calories} / ${dailyGoal.calories} cal (${percentage}%)\n${progressBar}\n\n`;
+      message += `🔥 Calories: ${totals.calories} / ${dailyGoal.calories} cal (${percentage}%)\n\n`;
     }
 
     if (!metric || metric === "protein") {
@@ -398,6 +397,13 @@ export function executeNutritionCommand(
 
     if (!metric || metric === "fat") {
       message += `🥑 Fats: ${totals.fats}g / ${dailyGoal.fats}g\n`;
+    }
+
+    // Handle unsupported metrics
+    if (metric && ["sugar", "fiber", "sodium"].includes(metric.toLowerCase())) {
+      message += `\n⚠️ ${
+        metric.charAt(0).toUpperCase() + metric.slice(1)
+      } tracking is not available yet.`;
     }
 
     return {
@@ -453,6 +459,16 @@ export function executeNutritionCommand(
     const data = metricMap[metric.toLowerCase()];
 
     if (!data) {
+      // Check if it's an unsupported nutrient
+      if (["sugar", "fiber", "sodium"].includes(metric.toLowerCase())) {
+        return {
+          success: false,
+          message: `📊 **${
+            metric.charAt(0).toUpperCase() + metric.slice(1)
+          }** tracking is not available yet.\n\nCurrently tracking:\n🔥 Calories\n🥩 Protein\n🍞 Carbs\n🥑 Fats\n\nStay tuned for more nutrients!`,
+        };
+      }
+
       return {
         success: false,
         message: `❌ Unknown nutrient: ${metric}. Try calories, protein, carbs, or fats.`,

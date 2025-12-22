@@ -102,11 +102,11 @@ const PantryTracker = () => {
             {/* Chatbox Icon - Active */}
             <button
               onClick={() => setIsChatOpen(!isChatOpen)}
-              className="p-3 bg-gradient-to-br from-indigo-100 to-purple-100 hover:from-indigo-200 hover:to-purple-200 rounded-full transition-all relative group shadow-md hover:shadow-lg"
+              className="p-3 bg-gradient-to-br from-green-100 to-emerald-100 hover:from-green-200 hover:to-emerald-200 rounded-full transition-all relative group shadow-md hover:shadow-lg"
               title="AI Assistant"
             >
               <svg
-                className="w-6 h-6 text-indigo-600"
+                className="w-6 h-6 text-green-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -119,7 +119,7 @@ const PantryTracker = () => {
                 />
               </svg>
               {!isChatOpen && (
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full animate-pulse" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-orange-500 to-pink-500 rounded-full animate-pulse" />
               )}
               <div className="absolute right-0 top-full mt-2 w-48 bg-gray-900 text-white text-xs rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                 🤖 Ask me about recipes & nutrition!

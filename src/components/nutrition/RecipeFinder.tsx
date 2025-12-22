@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { fetchWithCache, CACHE_DURATIONS } from "../../utils/cache";
 
 interface Recipe {
   id: number;
@@ -44,6 +45,14 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
     return saved ? JSON.parse(saved) : [];
   });
 
+  // Custom ingredient input states
+  const [customIngredientInput, setCustomIngredientInput] = React.useState("");
+  const [ingredientSuggestions, setIngredientSuggestions] = React.useState<
+    Array<{ name: string; image?: string }>
+  >([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = React.useState(false);
+  const [showSuggestions, setShowSuggestions] = React.useState(false);
+
   // Save to localStorage whenever savedRecipes changes
   React.useEffect(() => {
     localStorage.setItem(
@@ -84,6 +93,86 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
     );
   };
 
+  // Fetch ingredient autocomplete suggestions
+  const fetchIngredientSuggestions = async (query: string) => {
+    if (query.length < 2) {
+      setIngredientSuggestions([]);
+      return;
+    }
+
+    setIsLoadingSuggestions(true);
+    try {
+      const cacheKey = `platewise_cache_ingredient_autocomplete_${query.toLowerCase()}`;
+
+      const suggestions = await fetchWithCache<
+        Array<{ name: string; image?: string }>
+      >(
+        cacheKey,
+        async () => {
+          const response = await axios.get(
+            `${BASE_URL}/food/ingredients/autocomplete`,
+            {
+              params: {
+                apiKey: API_KEY,
+                query: query,
+                number: 8,
+                metaInformation: true,
+              },
+            }
+          );
+          return response.data;
+        },
+        CACHE_DURATIONS.LONG // Cache autocomplete for 24 hours
+      );
+
+      setIngredientSuggestions(suggestions);
+    } catch (err) {
+      console.error("Error fetching ingredient suggestions:", err);
+      setIngredientSuggestions([]);
+    } finally {
+      setIsLoadingSuggestions(false);
+    }
+  };
+
+  // Handle custom ingredient input change
+  const handleCustomIngredientChange = (value: string) => {
+    setCustomIngredientInput(value);
+    setShowSuggestions(true);
+
+    // Debounce API call
+    if (value.length >= 2) {
+      const timeoutId = setTimeout(() => {
+        fetchIngredientSuggestions(value);
+      }, 300);
+      return () => clearTimeout(timeoutId);
+    } else {
+      setIngredientSuggestions([]);
+    }
+  };
+
+  // Add custom ingredient
+  const addCustomIngredient = (ingredientName: string) => {
+    const trimmedName = ingredientName.trim();
+    if (trimmedName && !selectedIngredients.includes(trimmedName)) {
+      setSelectedIngredients((prev) => [...prev, trimmedName]);
+      setCustomIngredientInput("");
+      setIngredientSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  // Handle keyboard events for custom input
+  const handleCustomInputKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && customIngredientInput.trim()) {
+      e.preventDefault();
+      if (ingredientSuggestions.length > 0) {
+        addCustomIngredient(ingredientSuggestions[0].name);
+      } else {
+        addCustomIngredient(customIngredientInput);
+      }
+    }
+  };
+
   const handleSearch = async () => {
     if (!API_KEY) {
       setError(
@@ -109,52 +198,76 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
       let response;
 
       if (searchType === "ingredients") {
-        response = await axios.get(`${BASE_URL}/recipes/findByIngredients`, {
-          params: {
-            apiKey: API_KEY,
-            ingredients: selectedIngredients.join(","),
-            number: 12,
-            ranking: 2,
-            ignorePantry: true,
+        const cacheKey = `platewise_cache_search_ingredients_${selectedIngredients
+          .sort()
+          .join(",")}`;
+
+        const recipes = await fetchWithCache<Recipe[]>(
+          cacheKey,
+          async () => {
+            const res = await axios.get(
+              `${BASE_URL}/recipes/findByIngredients`,
+              {
+                params: {
+                  apiKey: API_KEY,
+                  ingredients: selectedIngredients.join(","),
+                  number: 12,
+                  ranking: 2,
+                  ignorePantry: true,
+                },
+              }
+            );
+
+            console.log("=== SEARCH BY INGREDIENTS API RESPONSE ===");
+            console.log("Selected Ingredients:", selectedIngredients);
+            console.log("Full Response:", res.data);
+            console.log("Number of recipes found:", res.data.length);
+            console.log("=========================================");
+
+            return res.data;
           },
-        });
-
-        console.log("=== SEARCH BY INGREDIENTS API RESPONSE ===");
-        console.log("Selected Ingredients:", selectedIngredients);
-        console.log("Full Response:", response.data);
-        console.log("Number of recipes found:", response.data.length);
-        console.log("=========================================");
-
-        setRecipes(response.data);
-      } else {
-        response = await axios.get(`${BASE_URL}/recipes/complexSearch`, {
-          params: {
-            apiKey: API_KEY,
-            query: searchQuery,
-            number: 12,
-            addRecipeInformation: true,
-          },
-        });
-
-        console.log("=== SEARCH BY RECIPE NAME API RESPONSE ===");
-        console.log("Search Query:", searchQuery);
-        console.log("Full Response:", response.data);
-        console.log("Results Array:", response.data.results);
-        console.log(
-          "Number of recipes found:",
-          response.data.results?.length || 0
+          CACHE_DURATIONS.MEDIUM // Cache searches for 1 hour
         );
-        console.log("===========================================");
 
-        const transformedRecipes = response.data.results.map((r: any) => ({
-          id: r.id,
-          title: r.title,
-          image: r.image,
-          usedIngredientCount: 0,
-          missedIngredientCount: 0,
-          likes: r.aggregateLikes,
-        }));
-        setRecipes(transformedRecipes);
+        setRecipes(recipes);
+      } else {
+        const cacheKey = `platewise_cache_search_recipe_${searchQuery.toLowerCase()}`;
+
+        const recipes = await fetchWithCache<Recipe[]>(
+          cacheKey,
+          async () => {
+            const res = await axios.get(`${BASE_URL}/recipes/complexSearch`, {
+              params: {
+                apiKey: API_KEY,
+                query: searchQuery,
+                number: 12,
+                addRecipeInformation: true,
+              },
+            });
+
+            console.log("=== SEARCH BY RECIPE NAME API RESPONSE ===");
+            console.log("Search Query:", searchQuery);
+            console.log("Full Response:", res.data);
+            console.log("Results Array:", res.data.results);
+            console.log(
+              "Number of recipes found:",
+              res.data.results?.length || 0
+            );
+            console.log("===========================================");
+
+            return res.data.results.map((r: any) => ({
+              id: r.id,
+              title: r.title,
+              image: r.image,
+              usedIngredientCount: 0,
+              missedIngredientCount: 0,
+              likes: r.aggregateLikes,
+            }));
+          },
+          CACHE_DURATIONS.MEDIUM // Cache searches for 1 hour
+        );
+
+        setRecipes(recipes);
       }
     } catch (err: any) {
       console.error("Error fetching recipes:", err);
@@ -172,6 +285,9 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
     setSearchQuery("");
     setRecipes([]);
     setError(null);
+    setCustomIngredientInput("");
+    setIngredientSuggestions([]);
+    setShowSuggestions(false);
   };
 
   return (
@@ -281,11 +397,81 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
         </div>
       )}
 
+      {/* Custom Ingredient Input */}
+      {searchType === "ingredients" && (
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">
+            Add Custom Ingredient
+          </h2>
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Type ingredient name (e.g., lobster, truffle, quinoa...)"
+              value={customIngredientInput}
+              onChange={(e) => handleCustomIngredientChange(e.target.value)}
+              onKeyPress={handleCustomInputKeyPress}
+              onFocus={() => setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+              className="w-full px-6 py-4 pr-28 rounded-2xl border-2 border-gray-200 focus:border-green-500 focus:outline-none text-lg transition-colors"
+            />
+            <button
+              onClick={() => addCustomIngredient(customIngredientInput)}
+              disabled={!customIngredientInput.trim()}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Add
+            </button>
+
+            {/* Autocomplete Suggestions Dropdown */}
+            {showSuggestions && customIngredientInput.length >= 2 && (
+              <div className="absolute z-10 w-full mt-2 bg-white border-2 border-gray-200 rounded-2xl shadow-xl max-h-80 overflow-y-auto">
+                {isLoadingSuggestions ? (
+                  <div className="p-4 text-center text-gray-500">
+                    <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+                    <p className="mt-2 text-sm">Loading suggestions...</p>
+                  </div>
+                ) : ingredientSuggestions.length > 0 ? (
+                  <div className="py-2">
+                    {ingredientSuggestions.map((suggestion, index) => (
+                      <button
+                        key={index}
+                        onClick={() => addCustomIngredient(suggestion.name)}
+                        className="w-full px-6 py-3 text-left hover:bg-green-50 transition-colors flex items-center gap-3"
+                      >
+                        {suggestion.image && (
+                          <img
+                            src={`https://spoonacular.com/cdn/ingredients_100x100/${suggestion.image}`}
+                            alt={suggestion.name}
+                            className="w-10 h-10 rounded-lg object-cover"
+                          />
+                        )}
+                        <span className="text-gray-900 font-medium capitalize">
+                          {suggestion.name}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 text-center text-gray-500 text-sm">
+                    No suggestions found. Press Enter to add "
+                    {customIngredientInput}"
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          <p className="mt-2 text-sm text-gray-600">
+            💡 Type at least 2 characters to see suggestions, or press Enter to
+            add your own
+          </p>
+        </div>
+      )}
+
       {/* Popular Ingredients */}
       {searchType === "ingredients" && (
         <div className="mb-8">
           <h2 className="text-xl font-bold text-gray-900 mb-4">
-            Popular Ingredients
+            Or Choose Popular Ingredients
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {popularIngredients.map((ingredient) => (
