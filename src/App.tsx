@@ -1,3 +1,7 @@
+import Home from "./pages/Home";
+import PantryTracker from "./pages/PantryTracker";
+import { InterpreterTest } from "./components/test/InterpreterTest";
+import { ParserDebug } from "./features/ParserDebug";
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import HeroSection from './components/home/HeroSection';
@@ -8,7 +12,6 @@ import { ChallengeProvider } from './pages/ChallengeContext';
 import { ChallengesPage } from './pages/ChallengesPage';
 import CommunityPage from './pages/CommunityPage';
 
-// ✅ NEW
 import SignInPage from './pages/SignInPage';
 import RegisterPage from './pages/RegisterPage';
 import OnboardingPage from './pages/OnboardingPage';
@@ -32,6 +35,10 @@ function App() {
                 </>
               }
             />
+            <Route path="/" element={<Home />} />
+            <Route path="/pantry-tracker" element={<PantryTracker />} />
+            <Route path="/test-interpreter" element={<InterpreterTest />} />
+            <Route path="/parser" element={<ParserDebug />} />
 
             <Route
               path="/challenges"
