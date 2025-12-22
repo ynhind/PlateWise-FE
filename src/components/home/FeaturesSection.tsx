@@ -1,4 +1,4 @@
-import React from "react";
+
 
 const features = [
   {
@@ -164,11 +164,10 @@ const FeaturesSection = () => {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div
-                className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 ${
-                  feature.color === "primary"
+                className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 ${feature.color === "primary"
                     ? "bg-green-50 text-green-600"
                     : "bg-emerald-50 text-emerald-600"
-                }`}
+                  }`}
               >
                 {feature.icon}
               </div>
