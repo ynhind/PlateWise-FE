@@ -257,7 +257,6 @@ const ChatboxPPL = ({
                         style={{ animationDelay: `${idx * 100}ms` }}
                         className="inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-full bg-gray-50/80 hover:bg-green-50 border border-gray-100 hover:border-green-200 transition-all group animate-slideRight"
                       >
-                        <span className="text-sm">{cmd.icon}</span>
                         <span className="text-xs text-gray-600 group-hover:text-green-700 font-medium">
                           {cmd.text}
                         </span>

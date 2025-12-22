@@ -292,39 +292,67 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
 
   return (
     <div>
-      {/* Search Type Toggle */}
-      <div className="mb-6 flex gap-3">
-        <button
-          onClick={() => {
-            setSearchType("ingredients");
-            setError(null);
-            setRecipes([]); // Clear recipes when switching tabs
-            setSearchQuery(""); // Clear recipe name search
-          }}
-          className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all ${
-            searchType === "ingredients"
-              ? "bg-green-600 text-white shadow-lg"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
-        >
-          Search by Ingredients
-        </button>
-        <button
-          onClick={() => {
-            setSearchType("recipe");
-            setError(null);
-            setRecipes([]); // Clear recipes when switching tabs
-            setSelectedIngredients([]); // Clear selected ingredients
-            setCustomIngredientInput(""); // Clear custom input
-          }}
-          className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all ${
-            searchType === "recipe"
-              ? "bg-green-600 text-white shadow-lg"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
-        >
-          Search by Recipe Name
-        </button>
+      {/* Search Type Toggle - Connected Switch Style */}
+      <div className="mb-6">
+        <div className="inline-flex items-center bg-gray-100 rounded-xl p-1 shadow-inner max-w-lg mx-auto w-full">
+          <button
+            onClick={() => {
+              setSearchType("ingredients");
+              setError(null);
+              setRecipes([]); // Clear recipes when switching tabs
+              setSearchQuery(""); // Clear recipe name search
+            }}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-semibold transition-all duration-200 ${
+              searchType === "ingredients"
+                ? "bg-white text-green-700 shadow-md"
+                : "text-gray-600 hover:text-gray-800"
+            }`}
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
+            </svg>
+            <span>By Ingredients</span>
+          </button>
+          <button
+            onClick={() => {
+              setSearchType("recipe");
+              setError(null);
+              setRecipes([]); // Clear recipes when switching tabs
+              setSelectedIngredients([]); // Clear selected ingredients
+              setCustomIngredientInput(""); // Clear custom input
+            }}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-semibold transition-all duration-200 ${
+              searchType === "recipe"
+                ? "bg-white text-green-700 shadow-md"
+                : "text-gray-600 hover:text-gray-800"
+            }`}
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            <span>By Recipe Name</span>
+          </button>
+        </div>
       </div>
 
       {/* Search Bar for Recipe Name */}
@@ -514,10 +542,7 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
               </div>
             )}
           </div>
-          <p className="mt-2 text-sm text-gray-600">
-            💡 Type at least 2 characters to see suggestions, or press Enter to
-            add your own
-          </p>
+          <p className="mt-2 text-sm text-gray-600">Type to see suggestions</p>
         </div>
       )}
 

@@ -128,7 +128,7 @@ const DailyTracker: React.FC<DailyTrackerProps> = ({
       alert("Please fill in meal name and calories");
       return;
     }
-    onAddMeal(newMeal, selectedDate);
+    onAddMeal({ ...newMeal, date: selectedDate }, selectedDate);
     setNewMeal({
       mealType: "breakfast",
       name: "",
