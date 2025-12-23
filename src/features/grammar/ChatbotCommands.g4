@@ -13,6 +13,7 @@ command
     | nutrientCheck            # CmdNutrientCheck
     | logMealContext           # CmdLogMealContext
     | logMealCustom            # CmdLogMealCustom
+    | helpCommand              # CmdHelp
     ;
 
 //Search By Ingredients: "find recipes with chicken and rice", "what can i cook with eggs"
@@ -61,6 +62,9 @@ logMealCustom: (LOG | ADD) (TO)? mealTime (COLON)? customFoodPhrase amount UNIT_
 customFoodPhrase: WORD+ ;
 amount: NUMBER ;
 
+// Help: "help", "commands", "what can i do", "show commands"
+helpCommand: (SHOW | LIST)? (AVAILABLE)? (COMMANDS | HELP) | WHAT_CAN_I_DO;
+
 
 //SUB RULES
 category: CATEGORY_KW ;
@@ -106,6 +110,11 @@ CREATE: 'create';
 MAKE: 'make';
 GENERATE: 'generate';
 SAVE: 'save';
+HELP: 'help';
+COMMANDS: 'commands';
+LIST: 'list';
+AVAILABLE: 'available';
+WHAT_CAN_I_DO: 'what can i do';
 COLON: ':';
 COMMA: ',' ;
 

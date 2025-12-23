@@ -25,16 +25,6 @@ function App() {
         <Navbar />
         <div className="grow">
           <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <HeroSection />
-                  <FeaturesSection />
-                  <HowItWorksSection />
-                </>
-              }
-            />
             <Route path="/" element={<Home />} />
             <Route path="/pantry-tracker" element={<PantryTracker />} />
             <Route path="/test-interpreter" element={<InterpreterTest />} />

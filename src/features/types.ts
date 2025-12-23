@@ -21,7 +21,10 @@ export type CommandType =
   | "MEAL_LOG_CUSTOM" // log breakfast: oatmeal 300 calories
 
   // Error
-  | "PARSE_ERROR"; // Invalid command
+  | "PARSE_ERROR" // Invalid command
+
+  // Help
+  | "HELP_REQUEST"; // User requests help
 
 // ============================================
 // AST (Abstract Syntax Tree)
@@ -47,7 +50,7 @@ export interface ASTPayload {
   // For RECIPE_SEARCH_BY_NAME
   recipeName?: string; // "pancake", "pasta carbonara"
 
-  // For RECIPE_SEARCH_BY_CATEGORY 
+  // For RECIPE_SEARCH_BY_CATEGORY
   category?: RecipeCategory; // "healthy", "low-calorie", "vegetarian"
   mealTime?: MealType; // "breakfast", "lunch", "dinner", "snack"
 
@@ -127,7 +130,7 @@ export interface InterpreterResponse {
 }
 
 export interface UIAction {
-  type: "NAVIGATE" | "DISPLAY_MODAL" | "UPDATE_TAB" | "SHOW_TOAST";
+  type: "NAVIGATE" | "DISPLAY_MODAL" | "UPDATE_TAB" | "SHOW_TOAST" | "SHOW_HELP_BUTTON";
   target?: string; // Tab name or route
   payload?: any; // Data to pass to UI component
 }
@@ -275,6 +278,10 @@ export function isMealCommand(ast: AST): boolean {
   );
 }
 
+export function isHelpCommand(ast: AST): boolean {
+  return ast.type === "HELP_REQUEST";
+}
+
 export function isParseError(ast: AST): ast is AST & { type: "PARSE_ERROR" } {
   return ast.type === "PARSE_ERROR";
 }
@@ -368,6 +375,12 @@ export const COMMAND_EXAMPLES = {
     "add lunch chicken rice 450 cal",
     "record snack apple 95 cal",
   ],
+  HELP_REQUEST: [
+    "help",
+    "show commands",
+    "what can i do",
+    "list available commands"
+  ]
 };
 
 export const HELP_TEXT = `

@@ -3,7 +3,7 @@ import { Interpreter } from "@/features/interpreter";
 import { useRecipes } from "./useRecipes";
 import { useMealLogs } from "./useMealLogs";
 import { useUserProfile } from "./useUserProfile";
-import type { AST, InterpreterResponse } from "@/features/types";
+import type { AST, InterpreterResponse, UIAction } from "@/features/types";
 
 interface ChatMessage {
   id: string;
@@ -11,6 +11,7 @@ interface ChatMessage {
   content: string;
   timestamp: Date;
   data?: any;
+  action?: UIAction;
 }
 
 /**
@@ -98,6 +99,7 @@ export const useChatbot = () => {
         content: result.message,
         timestamp: new Date(),
         data: result.data,
+        action: result.action,
       };
       setMessages((prev) => [...prev, botMessage]);
 
@@ -147,6 +149,7 @@ export const useChatbot = () => {
         content: result.message,
         timestamp: new Date(),
         data: result.data,
+        action: result.action,
       };
       setMessages((prev) => [...prev, botMessage]);
 

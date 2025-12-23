@@ -14,6 +14,7 @@ import { CmdDietCheckContext } from "./ChatbotCommandsParser";
 import { CmdNutrientCheckContext } from "./ChatbotCommandsParser";
 import { CmdLogMealContextContext } from "./ChatbotCommandsParser";
 import { CmdLogMealCustomContext } from "./ChatbotCommandsParser";
+import { CmdHelpContext } from "./ChatbotCommandsParser";
 import { CommandContext } from "./ChatbotCommandsParser";
 import { SearchByIngredientsContext } from "./ChatbotCommandsParser";
 import { IngredientListContext } from "./ChatbotCommandsParser";
@@ -32,6 +33,7 @@ import { LogMealContextContext } from "./ChatbotCommandsParser";
 import { LogMealCustomContext } from "./ChatbotCommandsParser";
 import { CustomFoodPhraseContext } from "./ChatbotCommandsParser";
 import { AmountContext } from "./ChatbotCommandsParser";
+import { HelpCommandContext } from "./ChatbotCommandsParser";
 import { CategoryContext } from "./ChatbotCommandsParser";
 import { MealTimeContext } from "./ChatbotCommandsParser";
 import { TimeRangeContext } from "./ChatbotCommandsParser";
@@ -132,6 +134,14 @@ export interface ChatbotCommandsVisitor<Result> extends ParseTreeVisitor<Result>
 	 * @return the visitor result
 	 */
 	visitCmdLogMealCustom?: (ctx: CmdLogMealCustomContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by the `CmdHelp`
+	 * labeled alternative in `ChatbotCommandsParser.command`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitCmdHelp?: (ctx: CmdHelpContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `ChatbotCommandsParser.command`.
@@ -258,6 +268,13 @@ export interface ChatbotCommandsVisitor<Result> extends ParseTreeVisitor<Result>
 	 * @return the visitor result
 	 */
 	visitAmount?: (ctx: AmountContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `ChatbotCommandsParser.helpCommand`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitHelpCommand?: (ctx: HelpCommandContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `ChatbotCommandsParser.category`.

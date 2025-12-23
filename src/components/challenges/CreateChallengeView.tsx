@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useChallenges } from "../../hooks/useChallenges";
-import { convertFileToBase64 } from "../../utils/fileUtils"; // Đã import đúng
+import { convertFileToBase64 } from "../../utils/fileUtils"; 
 
 interface CreateChallengeViewProps {
     onBack: () => void;
@@ -25,10 +25,9 @@ export const CreateChallengeView: React.FC<CreateChallengeViewProps> = ({
     const [file, setFile] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState(false); 
 
-    // --- SỬA LẠI HÀM NÀY ---
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsLoading(true); // Bắt đầu xử lý
+        setIsLoading(true); 
 
         try {
             // 1. Ảnh mặc định

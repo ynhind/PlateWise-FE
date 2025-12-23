@@ -167,6 +167,16 @@ export class Interpreter {
               ast.payload.suggestions?.join(", ") || "Try typing 'help'"
             }`,
           };
+        
+        // ===== HELP REQUEST COMMAND =====
+        case "HELP_REQUEST":
+          return {
+            success: true,
+            message: "I can help you with recipes, nutrition, and meal planning. Click the button below to see the full list of commands!",
+            action: { 
+              type: "SHOW_HELP_BUTTON" 
+            } 
+          };
 
         default:
           return {

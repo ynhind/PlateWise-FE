@@ -13,7 +13,8 @@ import {
     CmdDietCheckContext,
     CmdNutrientCheckContext,
     CmdLogMealContextContext,
-    CmdLogMealCustomContext
+    CmdLogMealCustomContext,
+    CmdHelpContext
 } from './generated/ChatbotCommandsParser';
 import { ChatbotCommandsVisitor } from './generated/ChatbotCommandsVisitor';
 
@@ -151,6 +152,13 @@ class CommandVisitor extends AbstractParseTreeVisitor<AST> implements ChatbotCom
                     calories: calories
                 }
             }
+        };
+    }
+    // 12. Help Command
+    visitCmdHelp(ctx: CmdHelpContext): AST {
+        return {
+            type: "HELP_REQUEST",
+            payload: {} 
         };
     }
 }

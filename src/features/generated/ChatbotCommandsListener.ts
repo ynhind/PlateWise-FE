@@ -14,6 +14,7 @@ import { CmdDietCheckContext } from "./ChatbotCommandsParser";
 import { CmdNutrientCheckContext } from "./ChatbotCommandsParser";
 import { CmdLogMealContextContext } from "./ChatbotCommandsParser";
 import { CmdLogMealCustomContext } from "./ChatbotCommandsParser";
+import { CmdHelpContext } from "./ChatbotCommandsParser";
 import { CommandContext } from "./ChatbotCommandsParser";
 import { SearchByIngredientsContext } from "./ChatbotCommandsParser";
 import { IngredientListContext } from "./ChatbotCommandsParser";
@@ -32,6 +33,7 @@ import { LogMealContextContext } from "./ChatbotCommandsParser";
 import { LogMealCustomContext } from "./ChatbotCommandsParser";
 import { CustomFoodPhraseContext } from "./ChatbotCommandsParser";
 import { AmountContext } from "./ChatbotCommandsParser";
+import { HelpCommandContext } from "./ChatbotCommandsParser";
 import { CategoryContext } from "./ChatbotCommandsParser";
 import { MealTimeContext } from "./ChatbotCommandsParser";
 import { TimeRangeContext } from "./ChatbotCommandsParser";
@@ -184,6 +186,19 @@ export interface ChatbotCommandsListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitCmdLogMealCustom?: (ctx: CmdLogMealCustomContext) => void;
+
+	/**
+	 * Enter a parse tree produced by the `CmdHelp`
+	 * labeled alternative in `ChatbotCommandsParser.command`.
+	 * @param ctx the parse tree
+	 */
+	enterCmdHelp?: (ctx: CmdHelpContext) => void;
+	/**
+	 * Exit a parse tree produced by the `CmdHelp`
+	 * labeled alternative in `ChatbotCommandsParser.command`.
+	 * @param ctx the parse tree
+	 */
+	exitCmdHelp?: (ctx: CmdHelpContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `ChatbotCommandsParser.command`.
@@ -382,6 +397,17 @@ export interface ChatbotCommandsListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitAmount?: (ctx: AmountContext) => void;
+
+	/**
+	 * Enter a parse tree produced by `ChatbotCommandsParser.helpCommand`.
+	 * @param ctx the parse tree
+	 */
+	enterHelpCommand?: (ctx: HelpCommandContext) => void;
+	/**
+	 * Exit a parse tree produced by `ChatbotCommandsParser.helpCommand`.
+	 * @param ctx the parse tree
+	 */
+	exitHelpCommand?: (ctx: HelpCommandContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `ChatbotCommandsParser.category`.
