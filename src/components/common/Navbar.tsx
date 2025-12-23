@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useSessionStorage } from '../../hooks/useSessionStorage';
 import { SESSION_KEYS, AuthState } from '../../libs/sessionKeys';
 import { Toast } from './Toast';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const nav = useNavigate();
 
-  const [auth, setAuth] = useSessionStorage<AuthState>(SESSION_KEYS.auth, {
+  const [auth, setAuth] = useLocalStorage<AuthState>(SESSION_KEYS.auth, {
     isAuthed: false,
   });
 
@@ -114,11 +114,9 @@ const Navbar = () => {
               ))}
             </div>
 
-            {/* ✅ CTA Buttons */}
             <div className="hidden md:flex items-center gap-3">
               {!auth.isAuthed ? (
                 <>
-                  {/* Sign In with icon */}
                   <Link
                     to="/signin"
                     className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors rounded-lg hover:bg-green-50"
@@ -128,7 +126,6 @@ const Navbar = () => {
                       className="w-8 h-8 rounded-lg flex items-center justify-center"
                       style={{ background: 'var(--bg-emerald-light)' }}
                     >
-                      {/* user icon */}
                       <svg
                         className="w-4 h-4"
                         fill="none"
@@ -200,7 +197,15 @@ const Navbar = () => {
                         />
                       </svg>
                     </span>
-                    <span>Dashboard</span>
+
+                    <span className="flex items-center gap-2">
+                      <span>Dashboard</span>
+                      {auth.username ? (
+                        <span className="text-xs font-semibold text-gray-500">
+                          ({auth.username})
+                        </span>
+                      ) : null}
+                    </span>
                   </Link>
 
                   <button

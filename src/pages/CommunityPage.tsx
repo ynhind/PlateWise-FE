@@ -84,9 +84,9 @@ const CommunityPage: React.FC = () => {
   ];
 
   const filterOptions: FilterOption[] = [
-    { id: 'all', label: 'Tất cả', icon: '📱' },
-    { id: 'trending', label: 'Thịnh hành', icon: '🔥' },
-    { id: 'recent', label: 'Mới nhất', icon: '⏰' },
+    { id: 'all', label: 'All', icon: '📱' },
+    { id: 'trending', label: 'Trending', icon: '🔥' },
+    { id: 'recent', label: 'Recent', icon: '⏰' },
   ];
 
   useEffect(() => {
@@ -117,7 +117,7 @@ const CommunityPage: React.FC = () => {
       author: { name: currentUser.name, id: currentUser.id, badge: '' },
       content: postData.content,
       image: postData.image,
-      timestamp: 'Vừa xong',
+      timestamp: 'Just now',
       likes: 0,
       comments: [],
       shares: 0,
@@ -153,7 +153,7 @@ const CommunityPage: React.FC = () => {
                 id: Date.now(),
                 author: currentUser.name,
                 text: commentText,
-                time: 'Vừa xong',
+                time: 'Just now',
               },
             ],
           };
@@ -168,9 +168,7 @@ const CommunityPage: React.FC = () => {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gradient">
-              PlateWise Community
-            </h1>
+            <h1 className="text-2xl font-bold text-gradient"></h1>
             <div className="flex items-center gap-4">
               <div className="relative">
                 <Search
@@ -181,13 +179,11 @@ const CommunityPage: React.FC = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Tìm kiếm bài viết..."
+                  placeholder="Searching in Community..."
                   className="pl-10 pr-4 py-2 w-80 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
-              <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-white font-semibold cursor-pointer">
-                B
-              </div>
+              
             </div>
           </div>
         </div>

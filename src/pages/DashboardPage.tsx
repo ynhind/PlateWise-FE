@@ -17,7 +17,7 @@ export default function DashboardPage() {
 
   return (
     <div
-      className="min-h-[calc(100vh-64px)] p-6"
+      className="min-h-screen  p-6"
       style={{ background: 'var(--bg-secondary)' }}
     >
       <div className="max-w-4xl mx-auto space-y-4">
