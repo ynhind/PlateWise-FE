@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useChallenges } from "../../hooks/useChallenges";
+import { convertFileToBase64 } from "../../utils/fileUtils"; // Đã import đúng
 
 interface CreateChallengeViewProps {
     onBack: () => void;
@@ -19,28 +20,52 @@ export const CreateChallengeView: React.FC<CreateChallengeViewProps> = ({
         title: "",
         description: "",
         duration: 7,
-        tags: "", 
+        tags: "",
     });
     const [file, setFile] = useState<File | null>(null);
+    const [isLoading, setIsLoading] = useState(false); 
 
-    const handleSubmit = (e: React.FormEvent) => {
+    // --- SỬA LẠI HÀM NÀY ---
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const coverImage = file
-            ? URL.createObjectURL(file)
-            : "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80";
+        setIsLoading(true); // Bắt đầu xử lý
 
-        const tagsArray = formData.tags
-            ? formData.tags.split(',').map(t => t.trim()).filter(t => t.length > 0)
-            : ["Personal"];
+        try {
+            // 1. Ảnh mặc định
+            let coverImage = "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80";
 
-        createChallenge({
-            title: formData.title,
-            description: formData.description,
-            duration: Number(formData.duration),
-            coverImage,
-            tags: tagsArray
-        });
-        onSuccess();
+            // 2. Nếu có file -> Chuyển sang Base64
+            if (file) {
+                try {
+                    coverImage = await convertFileToBase64(file);
+                } catch (error) {
+                    console.error("Lỗi chuyển đổi ảnh:", error);
+                    alert("Ảnh quá lớn hoặc bị lỗi, vui lòng chọn ảnh khác.");
+                    setIsLoading(false);
+                    return;
+                }
+            }
+
+            // 3. Xử lý Tags
+            const tagsArray = formData.tags
+                ? formData.tags.split(',').map(t => t.trim()).filter(t => t.length > 0)
+                : ["Personal"];
+
+            // 4. Tạo Challenge
+            createChallenge({
+                title: formData.title,
+                description: formData.description,
+                duration: Number(formData.duration),
+                coverImage, // Lưu chuỗi Base64 vào đây
+                tags: tagsArray
+            });
+
+            onSuccess();
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -100,7 +125,7 @@ export const CreateChallengeView: React.FC<CreateChallengeViewProps> = ({
                                 required
                             />
                         </div>
-                         <div>
+                        <div>
                             <label className="block text-gray-700 font-semibold mb-2">
                                 Tags (comma separated)
                             </label>
@@ -123,14 +148,16 @@ export const CreateChallengeView: React.FC<CreateChallengeViewProps> = ({
                             className="w-full p-3 border border-gray-200 rounded-xl file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-colors"
                             onChange={(e) => setFile(e.target.files?.[0] || null)}
                         />
+                        <p className="text-xs text-gray-400 mt-2 italic">Note: Please choose small images (under 500KB) to ensure saving works.</p>
                     </div>
 
                     <button
                         type="submit"
-                        className="w-full py-4 text-white rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all mt-4"
+                        disabled={isLoading}
+                        className={`w-full py-4 text-white rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all mt-4 ${isLoading ? 'opacity-70 cursor-wait' : ''}`}
                         style={gradientStyle}
                     >
-                        Create Challenge
+                        {isLoading ? "Creating..." : "Create Challenge"}
                     </button>
                 </form>
             </div>
