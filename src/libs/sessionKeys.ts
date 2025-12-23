@@ -13,6 +13,7 @@ export type AuthState = {
 export type AccountState = {
   username: string;
   email?: string;
+  password?: string;
 };
 
 export type ActivityLevel = 'low' | 'medium' | 'high';

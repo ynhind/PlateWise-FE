@@ -1,12 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthShell } from '../components/auth/AuthShell';
-import {
-  FormField,
-  Input,
-  Select,
-  Textarea,
-} from '../components/auth/formField';
 import { useSessionStorage } from '../hooks/useSessionStorage';
 import {
   SESSION_KEYS,
@@ -91,6 +85,64 @@ export default function OnboardingPage() {
     nav('/dashboard', { replace: true });
   }
 
+  const inputClass =
+    'w-full rounded-xl px-4 py-3 outline-none transition border';
+
+  const selectClass =
+    'w-full rounded-xl px-4 py-3 outline-none transition border';
+
+  const textareaClass =
+    'w-full rounded-xl px-4 py-3 outline-none transition border min-h-[96px]';
+
+  const baseStyle: React.CSSProperties = {
+    background: 'var(--bg-primary)',
+    borderColor: 'var(--border-light)',
+    color: 'var(--text-primary)',
+  };
+
+  const handleFocus = (
+    e:
+      | React.FocusEvent<HTMLInputElement>
+      | React.FocusEvent<HTMLSelectElement>
+      | React.FocusEvent<HTMLTextAreaElement>,
+  ) => {
+    e.currentTarget.style.borderColor = 'var(--color-primary)';
+  };
+
+  const handleBlur = (
+    e:
+      | React.FocusEvent<HTMLInputElement>
+      | React.FocusEvent<HTMLSelectElement>
+      | React.FocusEvent<HTMLTextAreaElement>,
+  ) => {
+    e.currentTarget.style.borderColor = 'var(--border-light)';
+  };
+
+  const Field = ({
+    label,
+    hint,
+    children,
+  }: {
+    label: string;
+    hint?: string;
+    children: React.ReactNode;
+  }) => (
+    <div className="space-y-1.5">
+      <label
+        className="text-sm font-semibold"
+        style={{ color: 'var(--text-primary)' }}
+      >
+        {label}
+      </label>
+      {children}
+      {hint ? (
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+          {hint}
+        </p>
+      ) : null}
+    </div>
+  );
+
   return (
     <AuthShell
       title="Set Your Goals"
@@ -100,51 +152,67 @@ export default function OnboardingPage() {
         {error ? <div className="alert-error">{error}</div> : null}
 
         <div className="grid grid-cols-2 gap-3">
-          <FormField label="Height (cm)">
-            <Input
+          <Field label="Height (cm)">
+            <input
               type="number"
               value={heightCm}
               min={120}
               max={220}
               onChange={(e) => setHeightCm(Number(e.target.value))}
+              className={inputClass}
+              style={baseStyle}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
             />
-          </FormField>
+          </Field>
 
-          <FormField label="Current Weight (kg)">
-            <Input
+          <Field label="Current Weight (kg)">
+            <input
               type="number"
               value={currentWeightKg}
               min={30}
               max={250}
               onChange={(e) => setCurrentWeightKg(Number(e.target.value))}
+              className={inputClass}
+              style={baseStyle}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
             />
-          </FormField>
+          </Field>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <FormField label="Target Weight (kg)">
-            <Input
+          <Field label="Target Weight (kg)">
+            <input
               type="number"
               value={targetWeightKg}
               min={30}
               max={250}
               onChange={(e) => setTargetWeightKg(Number(e.target.value))}
+              className={inputClass}
+              style={baseStyle}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
             />
-          </FormField>
+          </Field>
 
-          <FormField label="Goal">
-            <Select
+          <Field label="Goal">
+            <select
               value={goal}
               onChange={(e) => setGoal(e.target.value as GoalType)}
+              className={selectClass}
+              style={baseStyle}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
             >
               <option value="lose">Lose Weight</option>
               <option value="maintain">Maintain Weight</option>
               <option value="gain">Gain Weight</option>
-            </Select>
-          </FormField>
+            </select>
+          </Field>
         </div>
 
-        <FormField label="Activity Level">
+        <Field label="Activity Level">
           <div className="grid grid-cols-3 gap-2">
             {[
               { key: 'low', label: 'Low' },
@@ -163,38 +231,59 @@ export default function OnboardingPage() {
               </button>
             ))}
           </div>
-        </FormField>
+        </Field>
 
         <div className="grid grid-cols-3 gap-3">
-          <FormField label="Water (glasses/day)">
-            <Input
+          <Field label="Water (glasses/day)">
+            <input
               type="number"
               value={water}
               onChange={(e) => setWater(Number(e.target.value))}
+              className={inputClass}
+              style={baseStyle}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
             />
-          </FormField>
-          <FormField label="Meals (per day)">
-            <Input
+          </Field>
+
+          <Field label="Meals (per day)">
+            <input
               type="number"
               value={meals}
               onChange={(e) => setMeals(Number(e.target.value))}
+              className={inputClass}
+              style={baseStyle}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
             />
-          </FormField>
-          <FormField label="Sleep (hours/day)">
-            <Input
+          </Field>
+
+          <Field label="Sleep (hours/day)">
+            <input
               type="number"
               value={sleep}
               onChange={(e) => setSleep(Number(e.target.value))}
+              className={inputClass}
+              style={baseStyle}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
             />
-          </FormField>
+          </Field>
         </div>
 
-        <FormField
+        <Field
           label="Notes (optional)"
           hint="E.g., vegetarian, allergies, workout schedule, medical conditions..."
         >
-          <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
-        </FormField>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className={textareaClass}
+            style={baseStyle}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+          />
+        </Field>
 
         <div className="grid grid-cols-2 gap-3">
           <div className="nutrition-card-calories">
@@ -240,7 +329,7 @@ export default function OnboardingPage() {
           </div>
         </div>
 
-        <button className="btn-primary w-full" onClick={save}>
+        <button className="btn-primary w-full" type="button" onClick={save}>
           Save
         </button>
       </div>

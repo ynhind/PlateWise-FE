@@ -114,7 +114,7 @@ export const CreatePostCard: React.FC<CreatePostCardProps> = ({
                 ref={textareaRef}
                 value={postContent}
                 onChange={(e) => setPostContent(e.target.value)}
-                placeholder="Bạn đang nghĩ gì?"
+                placeholder="What's on your mind?"
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none transition-all"
                 rows={4}
                 autoFocus
@@ -129,16 +129,16 @@ export const CreatePostCard: React.FC<CreatePostCardProps> = ({
               />
 
               {postImage && (
-                <div className="relative group">
+                <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
                   <img
                     src={postImage}
                     alt="Preview"
-                    className="w-full h-48 object-cover rounded-xl"
+                    className="w-full max-h-[420px] object-contain"
                   />
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-xl" />
+
                   <button
                     onClick={handleClearImage}
-                    className="absolute top-2 right-2 p-1.5 bg-gray-900 bg-opacity-70 rounded-full text-white hover:bg-opacity-90 transition-all shadow-lg"
+                    className="absolute top-2 right-2 p-1.5 bg-gray-900/70 rounded-full text-white hover:bg-gray-900/90 transition-all shadow-lg"
                     type="button"
                   >
                     <X size={18} />

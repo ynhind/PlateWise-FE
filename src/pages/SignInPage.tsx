@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthShell } from '../components/auth/AuthShell';
-import { FormField, Input } from '../components/auth/formField';
 import { useSessionStorage } from '../hooks/useSessionStorage';
 import {
   SESSION_KEYS,
@@ -10,9 +9,16 @@ import {
   ProfileState,
 } from '../libs/sessionKeys';
 import { canLoginWithPassword } from '../libs/auth';
+import { Toast } from '../components/common/Toast';
 
 export default function SignInPage() {
   const nav = useNavigate();
+
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMsg, setToastMsg] = useState('Signed in successfully!');
+  const [toastType, setToastType] = useState<
+    'success' | 'error' | 'info' | 'warning'
+  >('success');
 
   const [auth, setAuth] = useSessionStorage<AuthState>(SESSION_KEYS.auth, {
     isAuthed: false,
@@ -57,50 +63,102 @@ export default function SignInPage() {
       !!profile.targetWeightKg &&
       !!profile.goal;
 
-    nav(hasProfile ? '/dashboard' : '/onboarding', { replace: true });
+    setToastType('success');
+    setToastMsg('Signed in successfully!');
+    setToastOpen(true);
+
+    window.setTimeout(() => {
+      nav(hasProfile ? '/dashboard' : '/onboarding', { replace: true });
+    }, 500);
   }
 
+  const inputClass =
+    'w-full rounded-xl px-4 py-3 outline-none transition border';
+
+  const inputStyle: React.CSSProperties = {
+    background: 'var(--bg-primary)',
+    borderColor: 'var(--border-light)',
+    color: 'var(--text-primary)',
+  };
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.currentTarget.style.borderColor = 'var(--color-primary)';
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.currentTarget.style.borderColor = 'var(--border-light)';
+  };
+
   return (
-    <AuthShell title="Sign in" subtitle="Enter password.">
-      <form className="space-y-4" onSubmit={onSubmit}>
-        {error ? <div className="alert-error">{error}</div> : null}
+    <>
+      <Toast
+        open={toastOpen}
+        message={toastMsg}
+        type={toastType}
+        duration={1200}
+        onClose={() => setToastOpen(false)}
+      />
+      <AuthShell title="Welcome back" subtitle="Sign in to your account.">
+        <form className="space-y-4" onSubmit={onSubmit}>
+          {error ? <div className="alert-error">{error}</div> : null}
 
-        <FormField label="Username">
-          <Input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="vd: vinam"
-            autoComplete="username"
-          />
-        </FormField>
+          <div className="space-y-1.5">
+            <label
+              className="text-sm font-semibold"
+              style={{ color: 'var(--text-primary)' }}
+            >
+              Username
+            </label>
+            <input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="vd: vinam"
+              autoComplete="username"
+              className={inputClass}
+              style={inputStyle}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+            />
+          </div>
 
-        <FormField label="Password">
-          <Input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-            type="password"
-            autoComplete="current-password"
-          />
-        </FormField>
+          <div className="space-y-1.5">
+            <label
+              className="text-sm font-semibold"
+              style={{ color: 'var(--text-primary)' }}
+            >
+              Password
+            </label>
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter password"
+              type="password"
+              autoComplete="current-password"
+              className={inputClass}
+              style={inputStyle}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+            />
+          </div>
 
-        <button className="btn-primary w-full" type="submit">
-          Login
-        </button>
+          <button className="btn-primary w-full" type="submit">
+            Login
+          </button>
 
-        <div className="flex items-center justify-between text-sm">
-          <span style={{ color: 'var(--text-muted)' }}>
-            Don't have an account?
-          </span>
-          <Link
-            className="font-semibold"
-            style={{ color: 'var(--color-primary)' }}
-            to="/register"
-          >
-            Register
-          </Link>
-        </div>
-      </form>
-    </AuthShell>
+          <div className="flex items-center justify-between text-sm">
+            <span style={{ color: 'var(--text-muted)' }}>
+              Don't have an account?
+            </span>
+            <Link
+              className="font-semibold"
+              style={{ color: 'var(--color-primary)' }}
+              to="/register"
+            >
+              Register
+            </Link>
+          </div>
+        </form>
+      </AuthShell>
+    </>
   );
 }
