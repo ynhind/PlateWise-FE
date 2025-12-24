@@ -88,27 +88,25 @@ export const ChallengeListView: React.FC<ChallengeListViewProps> = ({
       {/* --- TABS --- */}
       <div className="flex gap-8 mb-8 border-b border-gray-200">
         <button
-          className={`pb-3 text-lg font-semibold transition-all relative ${
-            activeTab === "active"
+          className={`pb-3 text-lg font-semibold transition-all relative ${activeTab === "active"
               ? "text-emerald-600 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-emerald-500"
               : "text-gray-400 hover:text-gray-600"
-          }`}
+            }`}
           onClick={() => handleTabChange("active")}
         >
-          My Active{" "}
+          My Journey{" "}
           <span className="text-sm ml-1 py-0.5 px-2 bg-gray-100 rounded-full text-gray-600">
             {activeChallenges.length}
           </span>
         </button>
         <button
-          className={`pb-3 text-lg font-semibold transition-all relative ${
-            activeTab === "community"
+          className={`pb-3 text-lg font-semibold transition-all relative ${activeTab === "community"
               ? "text-emerald-600 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-emerald-500"
               : "text-gray-400 hover:text-gray-600"
-          }`}
+            }`}
           onClick={() => handleTabChange("community")}
         >
-          Community{" "}
+          Discovery{" "}
           <span className="text-sm ml-1 py-0.5 px-2 bg-gray-100 rounded-full text-gray-600">
             {communityChallenges.length}
           </span>
@@ -122,11 +120,10 @@ export const ChallengeListView: React.FC<ChallengeListViewProps> = ({
             key={tag}
             onClick={() => setSelectedTag(tag)}
             style={selectedTag === tag ? gradientStyle : {}}
-            className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all duration-200 shadow-sm ${
-              selectedTag === tag
+            className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all duration-200 shadow-sm ${selectedTag === tag
                 ? "text-white shadow-md transform scale-105 border border-transparent"
                 : "bg-white text-gray-500 border border-gray-200 hover:border-emerald-200 hover:text-emerald-600"
-            }`}
+              }`}
           >
             {tag}
           </button>
@@ -148,9 +145,8 @@ export const ChallengeListView: React.FC<ChallengeListViewProps> = ({
               onClick={() =>
                 activeTab === "active" ? onChallengeClick(challenge.id) : null
               }
-              className={`group bg-white rounded-2xl border border-gray-100 hover:border-emerald-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col relative ${
-                activeTab === "active" ? "cursor-pointer" : ""
-              }`}
+              className={`group bg-white rounded-2xl border border-gray-100 hover:border-emerald-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col relative ${activeTab === "active" ? "cursor-pointer" : ""
+                }`}
             >
               {/* Nút Delete (Chỉ hiện ở Active tab) */}
               {activeTab === "active" && (
@@ -245,11 +241,10 @@ export const ChallengeListView: React.FC<ChallengeListViewProps> = ({
                       </div>
                       <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
                         <div
-                          className={`h-2 rounded-full transition-all duration-1000 ${
-                            progressPercent === 100
+                          className={`h-2 rounded-full transition-all duration-1000 ${progressPercent === 100
                               ? "bg-green-500"
                               : "bg-emerald-500"
-                          }`}
+                            }`}
                           style={{ width: `${progressPercent}%` }}
                         ></div>
                       </div>
@@ -317,7 +312,7 @@ export const ChallengeListView: React.FC<ChallengeListViewProps> = ({
               We couldn't find any{" "}
               {selectedTag !== "All" ? `"${selectedTag}"` : ""} challenges.
               {activeTab === "active"
-                ? " Join one from the Community!"
+                ? " Join one from Discovery!"
                 : " Try adjusting your filters."}
             </p>
             {activeTab === "active" && selectedTag === "All" && (
@@ -325,7 +320,7 @@ export const ChallengeListView: React.FC<ChallengeListViewProps> = ({
                 onClick={() => handleTabChange("community")}
                 className="mt-6 px-6 py-2.5 rounded-full font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors"
               >
-                Browse Community Challenges
+                Browse Discovery Challenges
               </button>
             )}
           </div>
