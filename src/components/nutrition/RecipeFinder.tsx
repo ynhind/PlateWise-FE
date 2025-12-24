@@ -446,7 +446,7 @@ const RecipeFinder: React.FC<RecipeFinderProps> = ({
             <button
               onClick={handleSearch}
               disabled={isLoading}
-              className="flex-1 py-2.5 bg-white border-2 border-green-500 text-green-700 font-semibold rounded-lg hover:bg-green-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+              className="flex-1 py-2.5  bg-green-600 border-green-300 text-white font-semibold rounded-lg hover:bg-green-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
             >
               {isLoading ? (
                 <>

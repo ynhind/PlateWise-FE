@@ -1,13 +1,13 @@
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthShell } from '../components/auth/AuthShell';
-import { useSessionStorage } from '../hooks/useSessionStorage';
+import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthShell } from "../components/auth/AuthShell";
+import { useSessionStorage } from "../hooks/useSessionStorage";
 import {
   SESSION_KEYS,
   ProfileState,
   ActivityLevel,
   GoalType,
-} from '../libs/sessionKeys';
+} from "../libs/sessionKeys";
 
 function clampNumber(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -24,33 +24,33 @@ export default function OnboardingPage() {
   const nav = useNavigate();
   const [profile, setProfile] = useSessionStorage<ProfileState>(
     SESSION_KEYS.profile,
-    {},
+    {}
   );
 
   const [heightCm, setHeightCm] = useState<number>(profile.heightCm ?? 165);
   const [currentWeightKg, setCurrentWeightKg] = useState<number>(
-    profile.currentWeightKg ?? 60,
+    profile.currentWeightKg ?? 60
   );
   const [targetWeightKg, setTargetWeightKg] = useState<number>(
-    profile.targetWeightKg ?? 55,
+    profile.targetWeightKg ?? 55
   );
-  const [goal, setGoal] = useState<GoalType>(profile.goal ?? 'lose');
+  const [goal, setGoal] = useState<GoalType>(profile.goal ?? "lose");
   const [activityLevel, setActivityLevel] = useState<ActivityLevel>(
-    profile.activityLevel ?? 'medium',
+    profile.activityLevel ?? "medium"
   );
 
   const [water, setWater] = useState<number>(
-    profile.habits?.waterGlassesPerDay ?? 6,
+    profile.habits?.waterGlassesPerDay ?? 6
   );
   const [meals, setMeals] = useState<number>(profile.habits?.mealsPerDay ?? 3);
   const [sleep, setSleep] = useState<number>(profile.habits?.sleepHours ?? 7);
 
-  const [notes, setNotes] = useState<string>(profile.notes ?? '');
+  const [notes, setNotes] = useState<string>(profile.notes ?? "");
   const [error, setError] = useState<string | null>(null);
 
   const bmi = useMemo(
     () => calcBMI(currentWeightKg, heightCm),
-    [currentWeightKg, heightCm],
+    [currentWeightKg, heightCm]
   );
 
   function save() {
@@ -62,7 +62,7 @@ export default function OnboardingPage() {
 
     if (!h || !cw || !tw) {
       setError(
-        'Please provide valid height and weight values within the allowed ranges.',
+        "Please provide valid height and weight values within the allowed ranges."
       );
       return;
     }
@@ -82,40 +82,40 @@ export default function OnboardingPage() {
       updatedAt: new Date().toISOString(),
     });
 
-    nav('/dashboard', { replace: true });
+    nav("/dashboard", { replace: true });
   }
 
   const inputClass =
-    'w-full rounded-xl px-4 py-3 outline-none transition border';
+    "w-full rounded-xl px-4 py-3 outline-none transition border";
 
   const selectClass =
-    'w-full rounded-xl px-4 py-3 outline-none transition border';
+    "w-full rounded-xl px-4 py-3 outline-none transition border";
 
   const textareaClass =
-    'w-full rounded-xl px-4 py-3 outline-none transition border min-h-[96px]';
+    "w-full rounded-xl px-4 py-3 outline-none transition border min-h-[96px]";
 
   const baseStyle: React.CSSProperties = {
-    background: 'var(--bg-primary)',
-    borderColor: 'var(--border-light)',
-    color: 'var(--text-primary)',
+    background: "var(--bg-primary)",
+    borderColor: "var(--border-light)",
+    color: "var(--text-primary)",
   };
 
   const handleFocus = (
     e:
       | React.FocusEvent<HTMLInputElement>
       | React.FocusEvent<HTMLSelectElement>
-      | React.FocusEvent<HTMLTextAreaElement>,
+      | React.FocusEvent<HTMLTextAreaElement>
   ) => {
-    e.currentTarget.style.borderColor = 'var(--color-primary)';
+    e.currentTarget.style.borderColor = "var(--color-primary)";
   };
 
   const handleBlur = (
     e:
       | React.FocusEvent<HTMLInputElement>
       | React.FocusEvent<HTMLSelectElement>
-      | React.FocusEvent<HTMLTextAreaElement>,
+      | React.FocusEvent<HTMLTextAreaElement>
   ) => {
-    e.currentTarget.style.borderColor = 'var(--border-light)';
+    e.currentTarget.style.borderColor = "var(--border-light)";
   };
 
   const Field = ({
@@ -130,13 +130,13 @@ export default function OnboardingPage() {
     <div className="space-y-1.5">
       <label
         className="text-sm font-semibold"
-        style={{ color: 'var(--text-primary)' }}
+        style={{ color: "var(--text-primary)" }}
       >
         {label}
       </label>
       {children}
       {hint ? (
-        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-xs" style={{ color: "var(--text-muted)" }}>
           {hint}
         </p>
       ) : null}
@@ -151,7 +151,7 @@ export default function OnboardingPage() {
       <div className="space-y-4">
         {error ? <div className="alert-error">{error}</div> : null}
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3 pt-20">
           <Field label="Height (cm)">
             <input
               type="number"
@@ -215,15 +215,15 @@ export default function OnboardingPage() {
         <Field label="Activity Level">
           <div className="grid grid-cols-3 gap-2">
             {[
-              { key: 'low', label: 'Low' },
-              { key: 'medium', label: 'Medium' },
-              { key: 'high', label: 'High' },
+              { key: "low", label: "Low" },
+              { key: "medium", label: "Medium" },
+              { key: "high", label: "High" },
             ].map((x) => (
               <button
                 key={x.key}
                 type="button"
                 className={
-                  activityLevel === x.key ? 'btn-primary' : 'btn-secondary'
+                  activityLevel === x.key ? "btn-primary" : "btn-secondary"
                 }
                 onClick={() => setActivityLevel(x.key as ActivityLevel)}
               >
@@ -289,19 +289,19 @@ export default function OnboardingPage() {
           <div className="nutrition-card-calories">
             <div
               className="text-sm font-semibold"
-              style={{ color: 'var(--calories-text)' }}
+              style={{ color: "var(--calories-text)" }}
             >
               BMI (reference)
             </div>
             <div
               className="mt-1 text-2xl font-bold"
-              style={{ color: 'var(--calories-dark)' }}
+              style={{ color: "var(--calories-dark)" }}
             >
-              {bmi ? bmi.toFixed(1) : '--'}
+              {bmi ? bmi.toFixed(1) : "--"}
             </div>
             <div
               className="text-xs mt-1"
-              style={{ color: 'var(--text-muted)' }}
+              style={{ color: "var(--text-muted)" }}
             >
               Calculated from current weight & height
             </div>
@@ -310,19 +310,19 @@ export default function OnboardingPage() {
           <div className="nutrition-card-protein">
             <div
               className="text-sm font-semibold"
-              style={{ color: 'var(--protein-text)' }}
+              style={{ color: "var(--protein-text)" }}
             >
               Target Difference
             </div>
             <div
               className="mt-1 text-2xl font-bold"
-              style={{ color: 'var(--protein-dark)' }}
+              style={{ color: "var(--protein-dark)" }}
             >
               {(targetWeightKg - currentWeightKg).toFixed(1)} kg
             </div>
             <div
               className="text-xs mt-1"
-              style={{ color: 'var(--text-muted)' }}
+              style={{ color: "var(--text-muted)" }}
             >
               Target - Current
             </div>

@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Award } from 'lucide-react';
-import { CreatePostCard } from '../components/community/create-post';
-import { PostCard } from '../components/community/post-card';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import React, { useState, useEffect } from "react";
+import { Search, Award } from "lucide-react";
+import { CreatePostCard } from "../components/community/create-post";
+import { PostCard } from "../components/community/post-card";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 import {
   Post,
   User,
   TrendingTopic,
   NewPostData,
-} from '../types/community.type';
+} from "../types/community.type";
 
-type FilterType = 'all' | 'trending' | 'recent';
+type FilterType = "all" | "trending" | "recent";
+
+const gradientTextStyle = {
+  background: "linear-gradient(135deg, #22c55e 0%, #10b981 100%)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
+};
 
 interface FilterOption {
   id: FilterType;
@@ -22,19 +29,19 @@ const CommunityPage: React.FC = () => {
   const initialPosts: Post[] = [
     {
       id: 1,
-      author: { name: 'Minh Nguyen', id: 'minh_nguyen', badge: 'Pro Member' },
+      author: { name: "Minh Nguyen", id: "minh_nguyen", badge: "Pro Member" },
       content:
-        'Hôm nay mình đã thử món salad cá hồi mới, cực kỳ ngon và bổ dưỡng! Ai muốn công thức không? 🥗💪',
+        "Hôm nay mình đã thử món salad cá hồi mới, cực kỳ ngon và bổ dưỡng! Ai muốn công thức không? 🥗💪",
       image:
-        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600&fit=crop',
-      timestamp: '2 giờ trước',
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600&fit=crop",
+      timestamp: "2 giờ trước",
       likes: 234,
       comments: [
         {
           id: 1,
-          author: 'Lan Pham',
-          text: 'Trông ngon quá! Share công thức với mình nhé!',
-          time: '1 giờ trước',
+          author: "Lan Pham",
+          text: "Trông ngon quá! Share công thức với mình nhé!",
+          time: "1 giờ trước",
         },
       ],
       shares: 12,
@@ -42,23 +49,23 @@ const CommunityPage: React.FC = () => {
     },
     {
       id: 2,
-      author: { name: 'Tuan Le', id: 'tuan_le', badge: 'Expert' },
+      author: { name: "Tuan Le", id: "tuan_le", badge: "Expert" },
       content:
-        'Chia sẻ với mọi người kế hoạch ăn uống 7 ngày của mình. Đã giảm được 3kg trong tháng vừa rồi! 🎯',
-      timestamp: '5 giờ trước',
+        "Chia sẻ với mọi người kế hoạch ăn uống 7 ngày của mình. Đã giảm được 3kg trong tháng vừa rồi! 🎯",
+      timestamp: "5 giờ trước",
       likes: 567,
       comments: [
         {
           id: 1,
-          author: 'Hoa Tran',
-          text: 'Chúc mừng bạn! Quyết tâm quá!',
-          time: '3 giờ trước',
+          author: "Hoa Tran",
+          text: "Chúc mừng bạn! Quyết tâm quá!",
+          time: "3 giờ trước",
         },
         {
           id: 2,
-          author: 'Nam Vo',
-          text: 'Mình cũng đang cần kế hoạch như vậy',
-          time: '2 giờ trước',
+          author: "Nam Vo",
+          text: "Mình cũng đang cần kế hoạch như vậy",
+          time: "2 giờ trước",
         },
       ],
       shares: 45,
@@ -67,26 +74,26 @@ const CommunityPage: React.FC = () => {
   ];
 
   const [posts, setPosts] = useLocalStorage<Post[]>(
-    'community_posts',
-    initialPosts,
+    "community_posts",
+    initialPosts
   );
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
-  const [activeFilter, setActiveFilter] = useState<FilterType>('recent');
+  const [activeFilter, setActiveFilter] = useState<FilterType>("recent");
 
-  const currentUser: User = { name: 'Bạn', id: 'current_user' };
+  const currentUser: User = { name: "Bạn", id: "current_user" };
 
   const trending: TrendingTopic[] = [
-    { tag: 'HealthyEating', posts: '1.2k', icon: '🥗' },
-    { tag: 'FitnessGoals', posts: '856', icon: '💪' },
-    { tag: 'MealPrep', posts: '645', icon: '🍱' },
-    { tag: 'WeightLoss', posts: '523', icon: '⚖️' },
+    { tag: "HealthyEating", posts: "1.2k", icon: "🥗" },
+    { tag: "FitnessGoals", posts: "856", icon: "💪" },
+    { tag: "MealPrep", posts: "645", icon: "🍱" },
+    { tag: "WeightLoss", posts: "523", icon: "⚖️" },
   ];
 
   const filterOptions: FilterOption[] = [
-    { id: 'all', label: 'All', icon: '📱' },
-    { id: 'trending', label: 'Trending', icon: '🔥' },
-    { id: 'recent', label: 'Recent', icon: '⏰' },
+    { id: "all", label: "All", icon: "📱" },
+    { id: "trending", label: "Trending", icon: "🔥" },
+    { id: "recent", label: "Recent", icon: "⏰" },
   ];
 
   useEffect(() => {
@@ -96,13 +103,13 @@ const CommunityPage: React.FC = () => {
       filtered = filtered.filter(
         (post) =>
           post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          post.author.name.toLowerCase().includes(searchQuery.toLowerCase()),
+          post.author.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    if (activeFilter === 'trending') {
+    if (activeFilter === "trending") {
       filtered = filtered.sort((a, b) => b.likes - a.likes);
-    } else if (activeFilter === 'recent') {
+    } else if (activeFilter === "recent") {
       filtered = filtered.sort((a, b) => b.id - a.id);
     } else {
       filtered = filtered.sort((a, b) => b.id - a.id);
@@ -114,10 +121,10 @@ const CommunityPage: React.FC = () => {
   const handleCreatePost = (postData: NewPostData): void => {
     const newPost: Post = {
       id: Date.now(),
-      author: { name: currentUser.name, id: currentUser.id, badge: '' },
+      author: { name: currentUser.name, id: currentUser.id, badge: "" },
       content: postData.content,
       image: postData.image,
-      timestamp: 'Just now',
+      timestamp: "Just now",
       likes: 0,
       comments: [],
       shares: 0,
@@ -137,7 +144,7 @@ const CommunityPage: React.FC = () => {
           };
         }
         return post;
-      }),
+      })
     );
   };
 
@@ -153,43 +160,48 @@ const CommunityPage: React.FC = () => {
                 id: Date.now(),
                 author: currentUser.name,
                 text: commentText,
-                time: 'Just now',
+                time: "Just now",
               },
             ],
           };
         }
         return post;
-      }),
+      })
     );
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gradient"></h1>
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                  size={20}
-                />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Searching in Community..."
-                  className="pl-10 pr-4 py-2 w-80 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-              
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 pt-20">
+      <header className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-2">
+            <div className="flex-shrink-0">
+              <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight mb-1">
+                Community <span style={gradientTextStyle}>Hub</span>
+              </h1>
+              <p className="text-gray-600 text-sm md:text-base">
+                Connect, share, and inspire your healthy living journey
+              </p>
+            </div>
+            <div className="relative w-full md:w-96 max-w-full md:max-w-xs mt-2 md:mt-0">
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search in Community..."
+                className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-gray-900 placeholder-gray-400 shadow-sm"
+                style={{ minWidth: 0 }}
+              />
             </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1 space-y-4">
             <div className="card">
@@ -201,8 +213,8 @@ const CommunityPage: React.FC = () => {
                     onClick={() => setActiveFilter(filter.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                       activeFilter === filter.id
-                        ? 'bg-gradient-primary text-white shadow-glow'
-                        : 'hover:bg-gray-50 text-gray-700'
+                        ? "bg-gradient-primary text-white shadow-glow"
+                        : "hover:bg-gray-50 text-gray-700"
                     }`}
                   >
                     <span className="text-xl">{filter.icon}</span>

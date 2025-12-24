@@ -43,9 +43,7 @@ function App() {
               path="/community"
               element={
                 <ChallengeProvider>
-                  <div className="pt-20">
-                    <CommunityPage />
-                  </div>
+                  <CommunityPage />
                 </ChallengeProvider>
               }
             />
@@ -58,7 +56,9 @@ function App() {
               path="/onboarding"
               element={
                 <ProtectedRoute>
-                  <OnboardingPage />
+                  <div className="pt-20">
+                    <OnboardingPage />
+                  </div>
                 </ProtectedRoute>
               }
             />
