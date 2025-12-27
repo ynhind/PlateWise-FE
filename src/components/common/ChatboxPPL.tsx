@@ -65,6 +65,18 @@ const ChatboxPPL = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [isListening, setIsListening] = useState(false);
+
+  // Khởi tạo SpeechRecognition
+  const recognitionRef = useRef<any>(null);
+
+  const handleMicClick = () => {
+    if (recognitionRef.current) {
+      setIsListening(true);
+      recognitionRef.current.start();
+    }
+  };
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -468,16 +480,58 @@ const ChatboxPPL = ({
                                           <h5 className="font-semibold text-sm text-gray-900 line-clamp-2 mb-2 group-hover:text-green-600 transition-colors leading-snug">
                                             {recipe.title}
                                           </h5>
+
                                           {recipe.usedIngredientCount !==
                                             undefined && (
                                             <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
                                               <span className="inline-flex items-center gap-1 text-xs text-green-600 font-semibold bg-green-50 px-2 py-1 rounded-lg shadow-sm">
-                                                {recipe.usedIngredientCount}{" "}
-                                                ingredients
+                                                <svg
+                                                  className="w-3 h-3"
+                                                  fill="currentColor"
+                                                  viewBox="0 0 20 20"
+                                                >
+                                                  <path
+                                                    fillRule="evenodd"
+                                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                    clipRule="evenodd"
+                                                  />
+                                                </svg>
+                                                {recipe.usedIngredientCount}
                                               </span>
+                                              {recipe.likes !== undefined && (
+                                                <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+                                                  <svg
+                                                    className="w-3.5 h-3.5 text-red-400"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 20 20"
+                                                  >
+                                                    <path
+                                                      fillRule="evenodd"
+                                                      d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                                      clipRule="evenodd"
+                                                    />
+                                                  </svg>
+                                                  <span className="font-medium">
+                                                    {recipe.likes.toLocaleString()}
+                                                  </span>
+                                                </span>
+                                              )}
                                             </div>
                                           )}
                                         </div>
+                                        <svg
+                                          className="w-5 h-5 text-gray-300 group-hover:text-green-500 group-hover:translate-x-0.5 transition-all flex-shrink-0 mt-1"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          viewBox="0 0 24 24"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M9 5l7 7-7 7"
+                                          />
+                                        </svg>
                                       </div>
                                     </div>
                                   ))}
@@ -516,6 +570,29 @@ const ChatboxPPL = ({
             <div className="border-t border-gray-100 bg-gradient-to-b from-white to-gray-50/50 p-4">
               <div className="flex gap-2.5 items-end">
                 <div className="flex-1 relative">
+                  <button
+                    type="button"
+                    onClick={handleMicClick}
+                    className={`absolute left-3 top-1/2 z-10 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full bg-green-50 border border-green-200 hover:bg-green-100 transition-all ${
+                      isListening ? "animate-pulse" : ""
+                    }`}
+                    title="Nhấn để nói"
+                    disabled={isProcessing}
+                  >
+                    <svg
+                      className="w-4 h-4 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 18v2m0 0h-4m4 0h4m-4-2a4 4 0 004-4V8a4 4 0 10-8 0v6a4 4 0 004 4z"
+                      />
+                    </svg>
+                  </button>
                   <input
                     ref={inputRef}
                     type="text"
@@ -524,8 +601,9 @@ const ChatboxPPL = ({
                     onKeyPress={handleKeyPress}
                     placeholder="Type your message..."
                     disabled={isProcessing}
-                    className="w-full px-4 py-3.5 pr-11 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-400 text-sm transition-all shadow-sm hover:shadow-md placeholder:text-gray-400"
+                    className="w-full pl-12 py-3.5 pr-11 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500 disabled:bg-gray-50 disabled:text-gray-400 text-sm transition-all shadow-sm hover:shadow-md placeholder:text-gray-400"
                   />
+
                   {inputValue && (
                     <button
                       onClick={() => setInputValue("")}

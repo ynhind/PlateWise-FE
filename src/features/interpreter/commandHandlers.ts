@@ -479,7 +479,7 @@ export function executeNutritionCommand(
 
     return {
       success: true,
-      message: `📊 Your ${metric} intake: **${data.value}${data.unit}** / ${data.goal}${data.unit} (${percentage}%)`,
+      message: `📊 Your ${metric} intake:${data.value}${data.unit} / ${data.goal}${data.unit} (${percentage}%)`,
       data: { metric, value: data.value, goal: data.goal, percentage },
     };
   }
@@ -528,7 +528,7 @@ export function executeNutritionCommand(
 
     return {
       success: true,
-      message: `${emoji} **${status}**\n\n🥩 Protein: ${proteinPercent}% (${totals.protein}g)\n🍞 Carbs: ${carbsPercent}% (${totals.carbs}g)\n🥑 Fats: ${fatsPercent}% (${totals.fats}g)\n\n💡 Recommended: Protein 30%, Carbs 40%, Fats 30%`,
+      message: `${emoji} ${status}\n\n🥩 Protein: ${proteinPercent}% (${totals.protein}g)\n🍞 Carbs: ${carbsPercent}% (${totals.carbs}g)\n🥑 Fats: ${fatsPercent}% (${totals.fats}g)\n\n💡 Recommended: Protein 30%, Carbs 40%, Fats 30%`,
       data: { proteinPercent, carbsPercent, fatsPercent, isBalanced },
     };
   }
@@ -581,9 +581,9 @@ export function executeNutritionCommand(
 
     return {
       success: true,
-      message: `${emoji} You've consumed **${
+      message: `${emoji} You've consumed ${
         data.value
-      }g** of ${nutrient} (${percentage}% of ${data.target}g target)${
+      }g of ${nutrient} (${percentage}% of ${data.target}g target)${
         isEnough ? "!" : ". Try to eat more!"
       }`,
       data: { nutrient, value: data.value, target: data.target, percentage },
@@ -661,7 +661,7 @@ export function executeMealLogCommand(
 
     return {
       success: true,
-      message: `✅ Added **${recipe.title}** to ${mealType}!\n📊 +${
+      message: `✅ Added ${recipe.title} to ${mealType}!\n📊 +${
         nutrition.calories * servingMultiplier
       } calories`,
       action: {
@@ -695,7 +695,7 @@ export function executeMealLogCommand(
 
     return {
       success: true,
-      message: `✅ Logged **${customMeal.name}** to ${mealType}!\n📊 +${customMeal.calories} calories`,
+      message: `✅ Logged ${customMeal.name} to ${mealType}!\n📊 +${customMeal.calories} calories`,
       action: {
         type: "UPDATE_TAB",
         target: "tracker",
@@ -807,7 +807,7 @@ export async function executeMealSuggestionCommand(
 
       return {
         success: true,
-        message: `🍽️ **Suggested ${mealTime || "meal"}:**\n${
+        message: `🍽️ Suggested ${mealTime || "meal"}:\n${
           topSuggestion.title
         } (~${Math.round(
           calories
@@ -889,7 +889,7 @@ export async function executeMealSuggestionCommand(
 
       return {
         success: true,
-        message: `📅 **Meal Plan for ${planDate || "Today"}** (~${Math.round(
+        message: `📅 Meal Plan for ${planDate || "Today"} (~${Math.round(
           totalCalories
         )} cal)\n\n🌅 Breakfast: ${plan.breakfast?.title || "N/A"}\n🌞 Lunch: ${
           plan.lunch?.title || "N/A"
